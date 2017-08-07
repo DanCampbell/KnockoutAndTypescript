@@ -1,0 +1,253 @@
+﻿@using System.Web.Script.Serialization
+
+@model KnockoutAndTypescript.ViewModels.RewardsViewModel
+@{ var modeldata = new JavaScriptSerializer().Serialize(Model); }
+@{
+    ViewBag.Title = "Reward";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <br />
+                <a data-bind="attr: { 'href': '@Url.Action("Points", "Home")' + '?childid=' + Child().ChildId }">Back to Points...
+                    @*<img src="~/Content/reward.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">*@
+                </a>
+            </div>
+            <div class="col-md-6 h2">
+                <span >Rewards:</span>
+                <span data-bind="text:Child().ChildName"></span>
+                <span data-bind="text:BankedPoints, visible:ShowAllocation"></span>
+                <span data-bind="visible:ShowAllocation">Points Banked</span>
+                <span> <img width="50" height="50" data-bind="attr:{src: Child().UserImage}" style="margin:5px 5px" /> </span>
+            </div>
+            <div data-bind="visible:ShowAllocation">
+            <br />
+            <a class=" btn btn-primary" data-bind="click:SaveChanges">Save Changes</a></div>
+
+        </div>
+    </div>
+
+
+    <div class="col-md-12" data-bind="visible:ShowRewards">
+        <div class="panel panel-default">
+            <div class="panel-heading">Rewards Achieved</div>
+            <div class="panel-body">
+                <ul class="list-group" data-bind="foreach:AwardedAry">
+                    <li class="list-group-item row">
+                        <div class="col-md-3" data-bind="text:GoalDescription"></div>
+                        <div class="col-md-1" data-bind="text:PointsAllocated"></div>
+                        <div class="col-md-1" data-bind="text:RewardReceivedDate"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="col-md-12" data-bind="visible:ShowAllocation">
+        
+        <ul class="list-group" data-bind="foreach:RewardsAry">
+            
+                <li class="list-group-item row">
+
+                    <div class="col-md-3" data-bind="text:GoalName"></div>
+                    <div class="col-md-1" data-bind="text:GoalCompletePoints"></div>
+
+                    @*<span> <input data-bind='textInput: GoalPoints,  valueUpdate: "input", event:{ input: $parent.TestFunction }' type="range" min="0" max="100" /></span>*@
+
+                    <div class="col-md-4" >
+                        <div data-bind="visible:SliderVisible">
+                            
+                            <input data-bind='textInput: GoalPoints,disable:WantReward, valueUpdate: "input", attr: {max:GoalCompletePoints}, event: { input: function(data)
+                              {
+                              @*//debugger;
+                              console.log($index.val);
+                              $("#rangeval0").text(data.GoalPoints);*@
+                              $parent.ChangeSlider(data);
+                              }}' type="range" min="0" max="10000" />
+                            
+                        </div>
+                        <div data-bind="visible:WantReward"><span>Reward Giver Will be Notified</span></div>
+                        <div data-bind="visible:GiveReward"><span>Reward Awarded</span></div>
+                    </div>
+                    @*<span data-bind=' attr: {id: "rangeval" + $index()}'>test</span>*@
+                    <div class="col-md-2" >
+                        <button class="btn-xs glyphicon glyphicon-minus-sign"></button>
+                        <button class="btn-xs glyphicon glyphicon-plus-sign"></button>
+                        <span class="h4" data-bind='text: GoalPoints'> </span>
+                    
+                    </div>
+                    <div data-bind="visible:$parent.UserLevel">
+                        <div class="col-md-1, checkbox" data-bind="visible:GoalPoints == GoalCompletePoints">
+                            @*<label>    <input type="checkbox" data-bind="checked: WantReward, event:{change:$parent.CheckWantReward}"/>Claim Reward</label>*@
+                            <label>
+                                
+                                <input type="checkbox" data-bind="checked: WantReward, event:{ change: function(data)
+                              {
+                              $parent.CheckWantReward(data);
+                              }}" />Claim Reward
+                            </label>
+                        </div>
+                    </div>
+                    <div data-bind="visible:$parent.Administrator">
+                        <div class="col-md-1, checkbox" data-bind="visible:GoalPoints == GoalCompletePoints">
+                            <label>
+                                <input type="checkbox" data-bind="checked: GiveReward, event:{ change: function(data)
+                              {
+                              $parent.CheckGiveReward(data);
+                              }}" />Give Reward
+                            </label>
+                        </div>
+                    </div>
+
+                    @*<span><input data-bind='textInput: GoalPoints, valueUpdate: "input", attr: {id: "rangeval_" + $index()}'></span>*@
+
+                    @*<span>
+                    <label data-bind='attr: {for: "points" + $index()}'>Points:</label>
+                    <input type="range" name="points" data-bind='value: GoalPoints, attr: {id: "points" + $index()}, attr: {name: "points" + $index()}' min="0" max="100" data-show-value="true">
+                </span>*@
+                    @*<span></span>*@
+                </li>
+            </div>
+        </ul>
+        @*<ul class="list-group">
+            <li class="list-group-item">
+                <span data-bind="text:Rewards0().GoalName"></span>&nbsp;<span data-bind="text:Rewards0().GoalCompletePoints"></span>
+                @*<span> <input data-bind='textInput: Rewards0().GoalPoints,  valueUpdate: "input" ' type="range" min="0" max="100"/></span>
+                <span data-bind='text: Rewards0().GoalPoints'>  </span>*@
+                @*<span> <input data-bind='textInput: TestSlider,  valueUpdate: "input" ' type="range" min="0" max="100" /></span>
+                <span data-bind='text: TestSlider'>  </span>
+            </li>
+        </ul>*@
+       
+    </div>
+<style>
+    input[type="checkbox"] {
+        transform: scale(2, 2);
+    }
+
+    input[type=range] {
+        -webkit-appearance: none;
+        margin: 10px 0;
+        width: 100%;
+    }
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 12.8px;
+            cursor: pointer;
+            animate: 0.2s;
+            box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+            background: #ac51b5;
+            border-radius: 25px;
+            border: 0px solid #000101;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+            border: 0px solid #000000;
+            height: 20px;
+            width: 39px;
+            background: #65001c;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -3.6px;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: #ac51b5;
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 1px;
+            cursor: pointer;
+            animate: 0.2s;
+            box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+            background: #ccc;
+            border-radius: 25px;
+            border: 0px solid #000101;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            border: 0;
+            height: 25px;
+            width: 25px;
+            border-radius: 25px;
+            background: #71bad6;
+            cursor: pointer;
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 12.8px;
+            cursor: pointer;
+            animate: 0.2s;
+            background: transparent;
+            border-color: transparent;
+            border-width: 39px 0;
+            color: transparent;
+        }
+
+        input[type=range]::-ms-fill-lower {
+            background: #ac51b5;
+            border: 0px solid #000101;
+            border-radius: 50px;
+            box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+        }
+
+        input[type=range]::-ms-fill-upper {
+            background: #ac51b5;
+            border: 0px solid #000101;
+            border-radius: 50px;
+            box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+        }
+
+        input[type=range]::-ms-thumb {
+            box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+            border: 0px solid #000000;
+            height: 20px;
+            width: 39px;
+            border-radius: 7px;
+            background: #71bad6;
+            cursor: pointer;
+        }
+
+        input[type=range]:focus::-ms-fill-lower {
+            background: #ac51b5;
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background: #ac51b5;
+        }
+
+</style>
+        <script src="~/Scripts/knockout-3.4.2.js"></script>
+        <script src="~/Scripts/knockout.mapping-latest.js"></script>
+        <script src="~/Scripts/Reward.js"></script>
+        <script src="~/Scripts/knockout.validation.js"></script>
+
+        @section scripts {
+            <script>
+            $(function () {
+                $("#testtext").text("changed");
+                var jsModelraw = @Html.Raw(modeldata);
+
+            var jsModel2 = @Html.Raw(Json.Encode(ViewBag.Child));
+            var listModel = new RewardsModel(jsModelraw);
+         //   debugger;
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: true,
+                insertMessages: true
+            });
+
+            ko.applyBindings(listModel);
+        });
+            </script>
+        }

@@ -1,0 +1,103 @@
+﻿@using System.Web.Script.Serialization
+@*@model List<KnockoutAndTypescript.Models.PointAllocation>*@
+    @model KnockoutAndTypescript.ViewModels.ChildDetailsViewModelList
+    @{ var Itemdata = new JavaScriptSerializer().Serialize(Model); }
+
+    @{
+        ViewBag.Title = "ChildDetail";
+    }
+    <div class="container-fluid">
+        <div class="col-md-12"><span class="h2" data-bind="text:child().ChildName"></span></div>
+        <div class="col-md-12">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p>Minus Points</p>
+                        <img src="~/Content/naughty-boy.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:204px;height:210px;">
+                        <span class="h2" data-bind="text:totalMinusPoints"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p>Good Points</p>
+                        <img src="~/Content/goodboy.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:204px;height:210px;">
+                        <span class="h2" data-bind="text:totalPlusPoints">></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="h2">Total Points</span>
+                        <span class="h2" data-bind="text:totalPoints"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <p>Banked Points</p>
+                        <img src="~/Content/piggy-bank.png" class="img-responsive img-rounded" data-bind="click:BankPointsClick" alt="Cinque Terre" style="width:140px;height:150px;">
+                        <span class="h2" data-bind="text:totalBankedPoints"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <p>Allocations</p>
+                        <a data-bind="attr: { 'href': '@Url.Action("Reward", "Home")' + '/' + child().ChildId }">
+                            <img src="~/Content/abacus.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                            </a>
+                            @*<span class="h2" data-bind="text:totalRewardPoints"></span>*@
+                    </div>
+
+                    <div class="col-md-3">
+                        <p>Rewards</p>
+                        <a data-bind="attr: { 'href': '@Url.Action("RewardHistory", "Home")' + '/' + child().ChildId }">
+                            <img src="~/Content/reward.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                        </a>
+                        @*<span class="h2" data-bind="text:totalRewardPoints"></span>*@
+                    </div>
+                </div>
+            </div>               
+            
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="list-group" data-bind="foreach:points">
+                            <li class="list-group-item"><span data-bind="text:AllocationDate"></span>&nbsp;<span data-bind="text:BehaviourName"></span><span class="badge" data-bind="text:BehaviourPoints"></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*<link href="~/Content/bootstrap.css" rel="stylesheet" />*@
+
+   
+    <script src="~/Scripts/knockout-3.4.2.js"></script>
+    <script src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script src="~/Scripts/ChildDetail.js"></script>
+    <script src="~/Scripts/knockout.validation.js"></script>
+    @section scripts {
+        <script>
+            $(function () {
+                //console.log(Model);
+                debugger;
+               
+                var jsModelraw = @Html.Raw(Itemdata);
+                
+             //   console.log(jsModelraw);
+//var jsModel = Json.Encode(jsModelraw);
+
+
+            var jsModel2 = @Html.Raw(Json.Encode(ViewBag.ChildDetails));
+            var listModel = new ChildDetailModel(jsModelraw, jsModel2);
+           // console.log(jsModel);
+
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: true,
+                insertMessages: true
+            });
+
+            ko.applyBindings(listModel);
+        });
+        </script>
+    }
+

@@ -1,0 +1,169 @@
+﻿@using System.Web.Script.Serialization
+
+@model List<KnockoutAndTypescript.ViewModels.PointReviewVM>
+@{ var Itemdata = new JavaScriptSerializer().Serialize(Model); }
+
+
+@{
+    ViewBag.Title = "ReviewPoints";
+}
+<style>
+    .badge {
+        padding: 1px 9px 2px;
+        font-size: 12.025px;
+        font-weight: bold;
+        white-space: nowrap;
+        color: #ffffff;
+        background-color: #999999;
+        -webkit-border-radius: 9px;
+        -moz-border-radius: 9px;
+        border-radius: 9px;
+    }
+
+    .badge:hover {
+        color: #ffffff;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .badge-error {
+        background-color: #b94a48;
+    }
+
+        .badge-error:hover {
+            background-color: #953b39;
+        }
+
+    .badge-warning {
+        background-color: #f89406;
+    }
+
+        .badge-warning:hover {
+            background-color: #c67605;
+        }
+
+    .badge-success {
+        background-color: #468847;
+    }
+
+        .badge-success:hover {
+            background-color: #356635;
+        }
+
+    .badge-info {
+        background-color: #3a87ad;
+    }
+
+        .badge-info:hover {
+            background-color: #2d6987;
+        }
+
+    .badge-inverse {
+        background-color: #333333;
+    }
+
+        .badge-inverse:hover {
+            background-color: #1a1a1a;
+        }
+
+</style>
+
+<span>
+    <a data-bind="attr: { 'href': '@Url.Action("ChildrenList", "Home")' + '/' + child().ChildId }">
+        Back to Children List...
+    </a>
+</span>
+
+<span>
+<a data-bind="attr: { 'href': '@Url.Action("Points", "Home")' + '/' + child().ChildId }">
+    Back to Points...
+</a>
+</span>
+
+<div class="col-md-12">
+    <span class="h2"> Review Points:</span>
+    <span class="h2" data-bind="text:child().ChildName"></span>
+    <br>
+    <h3>
+        <span class="label label-primary">
+            Total Points:
+            <label data-bind="text:totalPoints"></label>
+        </span>&nbsp;
+        <span class="label label-warning">
+            Total Minus:
+            <label data-bind="text:totalMinusPoints"></label>
+        </span>&nbsp;
+        <span class="label label-success">
+            Total Plus:
+            <label data-bind="text:totalPlusPoints"></label>
+        </span>&nbsp;
+        
+    </h3>
+    </div>
+<div class="panel">
+    <button class="btn btn-success" data-bind="click: approvePoints">Approve</button><br>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <ul class="list-group" data-bind="foreach:points">
+            <li class="list-group-item">
+                <span><button class="btn btn-danger" id="delete" data-bind="click: $parent.deleteItem.bind($data, $index(), $root)">Delete</button></span>
+                <span data-bind="text:AllocationDate"></span>&nbsp;
+                <span data-bind="text:ChildName"></span>&nbsp;
+                <span data-bind="text:BehaviourName"></span>
+                &nbsp;<span>- Points Given By: </span><span data-bind="text:Contributor"></span>&nbsp;
+                <span data-bind="if: BehaviourPoints > 0">
+                    <label class="badge badge-success" data-bind="text:BehaviourPoints "></label>
+                </span>
+                <span data-bind="if: BehaviourPoints < 0">
+                    <label class="badge badge-warning" data-bind="text:BehaviourPoints "></label>
+                </span>
+                <span data-bind="if: Approved">
+                    <label class="badge badge-warning">Approved</label>
+                </span>
+                @*<span class="badge badge-warning" data-bind="if: BehaviourPoints < 0, text:BehaviourPoints "></span>*@            
+            </li>
+        </ul>
+        <div data-bind="if:points().length == 0">
+            <span class="label label-warning">No Points Waiting</span>
+            <a data-bind="attr: { 'href': '@Url.Action("ChildrenList", "Home")' + '/' + child().ChildId }">
+                Back to Children List...
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/knockout.mapping-latest.js"></script>
+<script src="~/Scripts/ReviewPoints.js"></script>
+<script src="~/Scripts/knockout.validation.js"></script>
+@section scripts {
+    <script>
+            $(function () {
+                //console.log(Model);
+              //  debugger;
+                var jsModelraw = @Html.Raw(Itemdata);
+
+             //   console.log(jsModelraw);
+//var jsModel = Json.Encode(jsModelraw);
+
+
+                var jsModel2 = @Html.Raw(Json.Encode(ViewBag.ChildDetails));
+                var jsMode = @Html.Raw(Json.Encode(ViewBag.ReviewMode));
+            var listModel = new ReviewPointsModel(jsModelraw, jsModel2, jsMode);
+            //debugger;
+            //console.log(jsModel2);
+            //console.log(listmodel);
+           // console.log(jsModel);
+
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: true,
+                insertMessages: true
+            });
+
+            ko.applyBindings(listModel);
+        });
+    </script>
+}
+

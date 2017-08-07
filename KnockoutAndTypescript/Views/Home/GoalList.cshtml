@@ -1,0 +1,96 @@
+﻿@model List<KnockoutAndTypescript.Models.Goal>
+@{
+    ViewBag.Title = "Goal List";
+}
+@{
+   // var jsModel = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+    
+}
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+@*<script src="~/Scripts/knockout.validation.js"></script>*@
+
+<style type="text/css">
+    .errorStyle {
+        border: 2px solid red;
+        background-color: #fdd;
+    }
+</style>
+
+<h2>Goal List</h2>
+<form class="form-inline" data-bind="submit: addItem">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input class="form-control" id="name" data-bind='value: GoalName, valueUpdate: "afterkeydown"'>
+    </div>
+    <div class="form-group">
+        <label for="points">Points Required:</label>
+        <input class="form-control" id="points" data-bind='value: GoalPointsRequired, valueUpdate: "afterkeydown"'>
+        </div>
+    <div class="form-group">
+        <label for="autocreate">Auto Recurring:</label>
+        @*<select class="form-control" id="sex">
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select>*@
+        <input type="checkbox" class="form-control" id="autocreate" data-bind="checked: AutoCreate">
+        </div>
+    <div class="form-group">
+        <label for="addbtn">&nbsp;</label> <br>      
+        <button type="button" class="btn btn-primary" id="addbtn" data-bind="click: $root.addItem.bind($root)">Save</button>
+    </div>
+</form>
+&nbsp
+<div class="container-fluid panel panel-default" >   
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Points Required</th>
+                <th>Autocreate Recurring</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: goals">
+            <tr>
+                <td data-bind="text: GoalName"></td>
+                <td data-bind="text: GoalPointsRequired"></td>
+                @*<td data-bind="text: AutoCreate == true ? 'yes': 'no'"></td>*@
+                @*<td> <span class="glyphicon " data-bind="css: {'glyphicon-ok':AutoCreate ==true}"></span> </td>*@
+                <td> <span class="glyphicon" data-bind="css: {'glyphicon-ok':AutoCreate == true}"> </span> </td>
+                <td><button type="button" class="btn btn-danger" id="delete" data-bind="click: $parent.deleteItem.bind($data, $index(), $root)">Delete</button> </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<div class="alert alert-info" data-bind="visible: Errors().length > 0">
+    <strong>Form is not valid</strong> The form has following errors:
+    <ul data-bind="foreach: Errors">
+        <li data-bind="text: $data"></li>
+    </ul>
+</div>
+
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/knockout.mapping-latest.js"></script>
+<script src="~/Scripts/GoalList.js"></script>
+<script src="~/Scripts/knockout.validation.js"></script>
+@section scripts {
+    <script>
+        $(function () {
+            var jsModel2 = @Html.Raw(Json.Encode(Model));
+            var listModel = new GoalListModel(jsModel2);
+
+            console.log(jsModel2);
+            var viewmodel = { goals: ko.mapping.fromJS(@Html.Raw(Json.Encode(Model))) };
+           
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: true,
+                insertMessages: true
+            });
+
+            ko.applyBindings(listModel);
+
+        });
+    </script>
+}

@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Knockout";
+}
+
+<h2>Knockout</h2>
+
+<div class='liveExample'>
+
+    <form data-bind="submit: addItem">
+        New item:
+        <input data-bind='value: itemToAdd, valueUpdate: "afterkeydown"' />
+        <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
+        <p>Your items:</p>
+        <select multiple="multiple" width="50" data-bind="options: items"> </select>
+    </form>
+
+</div>
+@section scripts {
+ 
+<script src="~/Scripts/class1.js"></script>
+    <script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/knockout.mapping-latest.js"></script>
+    <!--SignalR script to update the chat page and send messages.-->
+    <script>
+
+        $(function () {
+            var SimpleListModel = function (items) {
+                this.items = ko.observableArray(items);
+                
+                this.itemToAdd = ko.observable("");
+                this.latestMessage = ko.observable("");
+                this.addRemoteItem = function (message) {
+                    this.items.push(message); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+                    this.latestMessage(message);
+                }
+
+                this.addItem = function () {
+                    if (this.itemToAdd() != "") {
+                        this.items.push(this.itemToAdd()); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+                        this.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
+                    }
+
+                }.bind(this);  // Ensure that "this" is always this view model
+
+            };
+            var vm = new SimpleListModel(["Alpha", "Beta", "Gamma"])
+            ko.applyBindings(vm);
+            var c1 = new Class1("test ts");
+              vm.addRemoteItem(c1.greet());
+        });
+    </script>
+}

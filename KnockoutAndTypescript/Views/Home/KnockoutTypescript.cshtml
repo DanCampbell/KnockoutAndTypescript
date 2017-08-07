@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "KnockoutTypescript";
+}
+
+<h2>KnockoutTypescript</h2>
+
+<div class='liveExample'>
+    <div id="div1">
+        <form data-bind="submit: addItem">
+            New item:
+            <input data-bind='value: itemToAdd, valueUpdate: "afterkeydown"' />
+            <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
+            <p>Your items:</p>
+            <select multiple="multiple" width="50" data-bind="options: items"> </select>
+        </form>
+    </div>
+    <div id="div2">
+        <form data-bind="submit: addItem">
+            New item:
+            <input data-bind='value: itemToAdd, valueUpdate: "afterkeydown"' />
+            <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
+            <p>Your items:</p>
+            <select multiple="multiple" width="50" data-bind="options: items"> </select>
+        </form>
+    </div>
+</div>
+
+<script src="~/Scripts/class1.js"></script>
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/ListModel.js"></script>
+<!--SignalR script to update the chat page and send messages.-->
+@section scripts {
+<script>
+        $(function () {
+  
+            var vm = new ListModel(["Alpha", "Beta", "Gamma"])
+            var vm2 = new ListModel(["Tom","Dick","Harry"])
+            ko.applyBindings(vm, document.getElementById('div1'));
+            ko.applyBindings(vm2, document.getElementById('div2'));
+            
+            
+        });
+</script>
+}

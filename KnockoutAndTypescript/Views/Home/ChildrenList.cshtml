@@ -1,0 +1,138 @@
+﻿@model List<KnockoutAndTypescript.Models.Child>
+@{
+    ViewBag.Title = "ChildrenList";
+}
+@{
+   // var jsModel = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+    
+}
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+@*<script src="~/Scripts/knockout.validation.js"></script>*@
+
+<style type="text/css">
+    .errorStyle {
+        border: 2px solid red;
+        background-color: #fdd;
+    }
+</style>
+
+<h2>ChildrenList</h2>
+<form class="form-inline" data-bind="submit: addItem">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input class="form-control" id="name" data-bind='value: ChildName, valueUpdate: "afterkeydown"'>
+
+    </div>
+    <div class="form-group">
+        <label for="age">Age:</label>
+        <input class="form-control" id="age" data-bind='value: ChildAge, valueUpdate: "afterkeydown"'>
+        </div>
+    <div class="form-group">
+    <label for="sex">Sex:</label>
+    @*<select class="form-control" id="sex">
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select>*@
+        <select class="form-control" id="sex" data-bind="options: SexOptions, optionsText: 'optionText', optionsValue:'optionValue', value: SexSelected"></select>       
+    </div>
+        
+    <div class="form-group">
+        <label for="addbtn">&nbsp;</label>
+        <br>
+        @*<button class="form-control" id="submit" type="submit" data-bind="enable: ChildName().length > 0">Add</button>*@
+        @*<button class="form-control" id="submit" type="submit">Add</button>*@
+        <button type="button" class="btn btn-primary" id="addbtn" data-bind="click: $root.addItem.bind($root)">Save</button>
+    </div>
+</form>
+&nbsp
+<div class="container-fluid panel panel-default" >
+    @*<div class="row col-md-12">
+        <div class="col-md-4" >Name</div>
+        <div class="col-md-4" >Age</div>
+        <div class="col-md-4" >Gender</div>
+    </div>
+    <div class="row col-md-12" data-bind="foreach: children">
+        <div class="col-md-4" data-bind="text: ChildName"></div>
+        <div class="col-md-4" data-bind="text: ChildAge"></div>
+        <div class="col-md-4" data-bind="text: ChildSex == true ? 'male': 'female'"></div>        
+    </div>*@
+    <table class="table table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th></th>
+                <th>Child Link</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: children">
+            <tr>
+                <td >
+                    <span data-bind="text: ChildName"></span><br />
+                    <a data-bind="attr: { 'href': '@Url.Action("EditChild", "Home")' + '/' + ChildId  }">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a data-bind="attr: { 'href': '@Url.Action("Points", "Home")' + '?childid=' + ChildId }">
+                        <img width="100" height="100" data-bind="attr:{src: UserImage}" />
+                    </a>
+                </td>
+                <td data-bind="text: ChildAge"></td>
+                <td data-bind="text: ChildSex == true ? 'male': 'female'"></td>
+                <td>
+                    <a data-bind="attr: { 'href': '@Url.Action("ReviewPoints", "Home")' + '/' + ChildId  }">Review Points                     
+                    </a>
+                </td>
+                <td>@ViewBag.ChildDetailUri<span data-bind="text:'/' + ChildId + '/?Parent=' +ParentUser + '&Code='+ UserAuthCode"> </span></td>
+                <td><button type="button" class="btn btn-danger" id="delete" data-bind="click: $parent.deleteItem.bind($data, $index(), $root)">Delete</button> </td>
+                <td> <button type="button" class="btn btn-success" id="image" data-bind="click: $parent.editImage.bind($data, $index(), $root)">Set Image</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<div class="alert alert-info" data-bind="visible: Errors().length > 0">
+    <strong>Form is not valid</strong> The form has following errors:
+    <ul data-bind="foreach: Errors">
+        <li data-bind="text: $data"></li>
+    </ul>
+</div>
+
+
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/knockout.mapping-latest.js"></script>
+<script src="~/Scripts/ChildrenList.js"></script>
+<script src="~/Scripts/knockout.validation.js"></script>
+@section scripts {
+    <script>
+        $(function () {
+            var jsModel2 = @Html.Raw(Json.Encode(Model));
+            var listModel = new ChildrenListModel(jsModel2);
+
+            console.log(jsModel2);
+            var viewmodel = { children: ko.mapping.fromJS(@Html.Raw(Json.Encode(Model))) };
+            //var vm = new ListModel(["Alpha", "Beta", "Gamma"])
+            //var vm2 = new ListModel(["Tom","Dick","Harry"])
+            // ko.applyBindings(vm, document.getElementById('div1'));
+            // ko.applyBindings(vm2, document.getElementById('div2'));
+            //ko.applyBindings(viewmodel
+            //The Validation initialization
+            ko.validation.init({
+                registerExtenders: true,
+
+                messagesOnModified: true,
+
+                insertMessages: true
+
+            });
+
+            ko.applyBindings(listModel);
+
+        });
+    </script>
+}

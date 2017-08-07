@@ -1,0 +1,80 @@
+﻿@model KnockoutAndTypescript.Models.Contributor
+@Styles.Render("~/Content/dropzonecss")
+
+<style>
+    
+
+   
+    #dropZone {
+        background: gray;
+        border: black dashed 3px;
+        width: 200px;
+        padding: 50px;
+        text-align: center;
+        color: white;
+    }
+</style>
+
+@{
+    ViewBag.Title = "UploadContributorImage";
+}
+
+
+
+<div>
+    <h4>@Html.ActionLink("Back to Contributors", "ContributorList", "Home")</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ContributorName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ContributorName)
+        </dd>
+               
+        
+        <dt>
+           <label>Image</label> 
+        </dt>
+        <dd>
+            @if (Model.ContributorImage != null)
+            {
+            <img src="@Url.Content(Model.ContributorImage)" width="100", height="100">
+            }
+        </dd>
+
+    </dl>
+</div>
+@section scripts {
+    <script src="~/Scripts/dropzone/dropzone.js"></script>
+
+    <script>
+        var userIdVal = @(Model.ContributorId);
+        Dropzone.options.dropzoneForm = {
+            paramName: ''+ userIdVal,
+            params: 'testname',
+            init: function () {
+                this.on("complete", function (data) {
+                    //var res = eval('(' + data.xhr.responseText + ')');
+                    var res = JSON.parse(data.xhr.responseText);
+                });
+            }
+        };
+</script>
+}
+<div class="jumbotron">
+    <form action="~/Home/SaveContributorUploadedFile" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="width: 500px; background: none; border: none;">
+        <div class="fallback">
+            <input name="file" type="file" multiple />
+            <input type="submit" value="Upload" />
+        </div>
+    </form>
+</div>
+
+//File Upload response from the server
+
+@*<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ChildId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>*@

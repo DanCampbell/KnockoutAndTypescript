@@ -1,0 +1,117 @@
+﻿@model List<KnockoutAndTypescript.Models.Contributor>
+@{
+    ViewBag.Title = "Ccontributor List";
+}
+@{
+   // var jsModel = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+    
+}
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+@*<script src="~/Scripts/knockout.validation.js"></script>*@
+
+<style type="text/css">
+    .errorStyle {
+        border: 2px solid red;
+        background-color: #fdd;
+    }
+</style>
+
+<h2>Contributor List</h2>
+<form class="form-inline" data-bind="submit: addItem">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input class="form-control" id="name" data-bind='value: ContributorName, valueUpdate: "afterkeydown"'>
+
+    </div>
+    @*<div class="form-group">
+        <label for="authcode">Auth Code:</label>
+        <input class="form-control" id="authcode" data-bind='value: ContributorAuthCode, valueUpdate: "afterkeydown"'>
+        </div>*@
+            
+    <div class="form-group">
+        <label for="addbtn">&nbsp;</label>
+        <br>
+       
+        <button type="button" class="btn btn-primary" id="addbtn" data-bind="click: $root.addItem.bind($root)">Save</button>
+    </div>
+</form>
+&nbsp
+<div class="container-fluid panel panel-default" >
+   
+    <table class="table table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Image</th>
+                <th>AuthCode</th>
+                <th>Contributor Link</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: contributors">
+            <tr>
+                <td >
+                    <span data-bind="text: ContributorName"></span><br />
+                    <a data-bind="attr: { 'href': '@Url.Action("EditContributor", "Home")' + '/' + ContributorId  }">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a data-bind="attr: { 'href': '@Url.Action("Points", "Home")' + '?contributorid=' + ContributorId }">
+                        <img width="100" height="100" data-bind="attr:{src: ContributorImage}" />
+                    </a>
+                </td>
+               
+                <td>
+                    @*<a data-bind="attr: { 'href': '@Url.Action("ReviewContributorPoints", "Home")' + '/' + ContributorId + '?contributorid=' + ContributorId  }">Review Points                     
+                    </a>*@
+                    <a data-bind="attr: { 'href': '@Url.Action("ReviewContributorPoints", "Home")' + '/' + '?Parent=' +ParentUser + '&Contributor='+ ContributorAuthCode}">
+                        Review Points
+                    </a>
+                </td>
+                <td>@ViewBag.ContributorDetailUri<span data-bind="text:'/' + ContributorId + '/?Parent=' +ParentUser + '&Contributor='+ ContributorAuthCode"> </span></td>
+                <td><button type="button" class="btn btn-danger" id="delete" data-bind="click: $parent.deleteItem.bind($data, $index(), $root)">Delete</button> </td>
+                <td> <button type="button" class="btn btn-success" id="image" data-bind="click: $parent.editImage.bind($data, $index(), $root)">Set Image</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<div class="alert alert-info" data-bind="visible: Errors().length > 0">
+    <strong>Form is not valid</strong> The form has following errors:
+    <ul data-bind="foreach: Errors">
+        <li data-bind="text: $data"></li>
+    </ul>
+</div>
+
+
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/knockout.mapping-latest.js"></script>
+<script src="~/Scripts/ContributorList.js"></script>
+<script src="~/Scripts/knockout.validation.js"></script>
+@section scripts {
+    <script>
+        $(function () {
+            var jsModel2 = @Html.Raw(Json.Encode(Model));
+            var parent = '@Html.Raw(ViewBag.Parent)';
+            var listModel = new ContributorListModel(jsModel2, parent);
+
+
+            console.log(jsModel2);
+            var viewmodel = { contributor: ko.mapping.fromJS(@Html.Raw(Json.Encode(Model))) };
+
+            ko.validation.init({
+                registerExtenders: true,
+
+                messagesOnModified: true,
+
+                insertMessages: true
+
+            });
+
+            ko.applyBindings(listModel);
+
+        });
+    </script>
+}

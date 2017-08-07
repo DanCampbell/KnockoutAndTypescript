@@ -1,0 +1,103 @@
+﻿@model KnockoutAndTypescript.Models.Child
+@Styles.Render("~/Content/dropzonecss")
+
+<style>
+    
+
+   
+    #dropZone {
+        background: gray;
+        border: black dashed 3px;
+        width: 200px;
+        padding: 50px;
+        text-align: center;
+        color: white;
+    }
+</style>
+
+@{
+    ViewBag.Title = "UploadUserImage";
+}
+
+
+
+<div>
+    <h4>@Html.ActionLink("Back to Children", "ChildrenList", "Home")</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ChildName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChildName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChildAge)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChildAge)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChildSex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChildSex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BankedPoints)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BankedPoints)
+        </dd>
+
+        <dt>
+           <label>Image</label> 
+        </dt>
+        <dd>
+            @if (Model.UserImage != null)
+            {
+            <img src="@Url.Content(Model.UserImage)" width="100", height="100">
+            }
+        </dd>
+
+    </dl>
+</div>
+@section scripts {
+    <script src="~/Scripts/dropzone/dropzone.js"></script>
+
+    <script>
+        var userIdVal = @(Model.ChildId);
+        Dropzone.options.dropzoneForm = {
+            paramName: ''+ userIdVal,
+            params: 'testname',
+            init: function () {
+                this.on("complete", function (data) {
+                    //var res = eval('(' + data.xhr.responseText + ')');
+                    var res = JSON.parse(data.xhr.responseText);
+                });
+            }
+        };
+</script>
+}
+<div class="jumbotron">
+    <form action="~/Home/SaveUserUploadedFile" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="width: 500px; background: none; border: none;">
+        <div class="fallback">
+            <input name="file" type="file" multiple />
+            <input type="submit" value="Upload" />
+        </div>
+    </form>
+</div>
+
+//File Upload response from the server
+
+@*<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ChildId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>*@

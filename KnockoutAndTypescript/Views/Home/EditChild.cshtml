@@ -1,0 +1,74 @@
+﻿@using System.Web.Script.Serialization
+@*@model List<KnockoutAndTypescript.Models.PointAllocation>*@
+@model KnockoutAndTypescript.Models.Child
+@{ var Itemdata = new JavaScriptSerializer().Serialize(Model); }
+@{
+    ViewBag.Title = "Edit Child";
+}
+<span>
+    <a data-bind="attr: { 'href': '@Url.Action("ChildrenList", "Home")' }">
+        Back to Children List...
+    </a>
+</span>
+
+<h2>Edit Child</h2>
+
+
+<form class="form-horizontal">
+    <div class="form-group">
+        <label for="image">Image:</label>
+        <img width="100" height="100" data-bind="attr:{src: UserImage}" id="image"/>
+    </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" data-bind="value:ChildName" required>
+        </div>
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" class="form-control" id="age" data-bind="value:ChildAge" required min="0" max="99">
+        </div>
+        <div class="form-group">            
+                <label for="authcode">Code:</label>
+                <input type="text" class="form-control" id="authcode" data-bind="value:UserAuthCode" readOnly>
+                <button class="btn btn-danger btn-xs" data-bind="click:CodeClick">Change</button>           
+        </div>
+        <div class="form-group">
+            <label for="sex">Sex:</label>
+            @*<select class="form-control" id="sex">
+                    <option value="0">Female</option>
+                    <option value="1">Male</option>
+                </select>*@
+            <select class="form-control" id="sex" data-bind="options: SexOptions, optionsText: 'optionText', optionsValue:'optionValue', value: SexSelected"></select>
+        </div>
+        
+        <button class="btn btn-primary" data-bind="click:UpdateChildClick">Update</button>
+</form>
+
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/knockout.mapping-latest.js"></script>
+<script src="~/Scripts/EditChild.js"></script>
+<script src="~/Scripts/knockout.validation.js"></script>
+<script src="~/Scripts/require.js"></script>
+@section scripts {
+    <script>
+            $(function () {
+                
+                debugger;
+
+                var jsModelraw = @Html.Raw(Itemdata);    
+                var rtnuri = '@Html.Raw(ViewBag.RtnUri)';
+               // var Itemdata2 = new JavaScriptSerializer().Serialize(rtnuri);
+                //var k1 = new kidipoints();
+
+                var listModel = new ChildEditModel(jsModelraw, rtnuri);           
+
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: true,
+                insertMessages: true
+            });
+
+            ko.applyBindings(listModel);
+        });
+    </script>
+}
