@@ -435,6 +435,7 @@
     <Content Include="Views\Home\Contribute.cshtml" />
     <Content Include="Views\Home\ContributorList.cshtml" />
     <Content Include="Views\Home\UploadContributorImage.cshtml" />
+    <Content Include="Views\Home\PointsTicker.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -469,6 +470,7 @@
     <TypeScriptCompile Include="Scripts\greeter.ts" />
     <TypeScriptCompile Include="Scripts\ListModel.ts" />
     <TypeScriptCompile Include="Scripts\BehaviourList.ts" />
+    <TypeScriptCompile Include="Scripts\PointsTicker.ts" />
     <TypeScriptCompile Include="Scripts\ReviewPoints.ts" />
     <TypeScriptCompile Include="Scripts\TestModule.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />

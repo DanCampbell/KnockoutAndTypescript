@@ -8,6 +8,7 @@ using KnockoutAndTypescript.Models;
 using System.Web.WebSockets;
 using Microsoft.AspNet.SignalR;
 using KnockoutAndTypescript.ViewModels;
+using KnockoutAndTypescript.Hubs;
 using System.IO;
 
 namespace KnockoutAndTypescript.Controllers
@@ -36,6 +37,11 @@ namespace KnockoutAndTypescript.Controllers
         }
 
         public ActionResult Chat()
+        {
+            return View();
+        }
+
+        public ActionResult PointsTicker()
         {
             return View();
         }
@@ -613,6 +619,18 @@ namespace KnockoutAndTypescript.Controllers
             DateTime curtime = DateTime.Now;
             point.AllocationDate = curtime;
             BL.AddPoint(point);
+            // Broadcast Change using SignalR
+            var child = BL.GetChildForId(point.ChildId);
+            string contributorStr = child.ParentUser;
+
+            if (point.ContributorId > 0)
+            {
+                var contributor = BL.GetContributorForId(point.ContributorId);
+                contributorStr = contributor.ContributorName;
+            }
+
+            var gc = GlobalHost.ConnectionManager.GetHubContext<KidHub>();
+            gc.Clients.All.addNewMessageToPage(child.ParentUser, contributorStr + "- Points Allocated:"+ point.Points.ToString());
             return Json(point, JsonRequestBehavior.AllowGet);
         }
 
