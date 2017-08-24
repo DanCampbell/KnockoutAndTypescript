@@ -1,0 +1,171 @@
+﻿
+@{
+    ViewBag.Title = "GraphTest";
+}
+
+<h2>GraphTest</h2>
+<div>
+    <table style="width: 100%">
+        <tr>
+            @*<td style="width: 50%; text-align: center">*@
+            <td style="text-align: center">
+                <canvas id="canvasForPieChart" height="200" width="400">Chart is Loading...</canvas>
+            </td>
+            <td style=" text-align: center">
+                <canvas id="canvasForLineChart" height="200" width="400">Chart is Loading...</canvas>
+
+            </td>
+            
+        </tr>
+    </table>
+</div>
+@section scripts {
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+<script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+
+<script src="~/Scripts/Chart.js"></script>
+<script src="~/signalr/hubs"></script>
+
+<script>
+    function checkHTML5() {
+        var canvasForLineChart = document.getElementById("canvasForLineChart");
+        if (canvasForLineChart == null || canvasForLineChart == "") {
+            document.write("Browser doesn't support HTML5 2D Context");
+            return false;
+        }
+        if (canvasForLineChart.getContext) {
+
+        }
+        else {
+            document.write("Browser doesn't support HTML5 2D Context");
+            return false;
+        }
+    }
+
+    $(function () {
+        //If not HTML5 Support the Exit
+        if (checkHTML5() == false) return;
+        var chat = $.connection.kidHub;
+        //Create the Hub
+        var chartHub = $.connection.chartHub;
+
+
+        //Call InitChartData
+        $.connection.hub.start().done(function () {
+            chartHub.server.initChartData();
+
+        });
+
+        //Call to Update LineChart from Server
+        chartHub.client.updateChart = function (line_data, pie_data) {
+            UpdateLineChart(line_data);  //Call the LineChart Update method
+            UpdatePieChart(pie_data);     //Call the PieChart Update method
+        };
+
+
+    });
+</script>
+
+<script type="text/javascript">
+     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+     //Line Chart JSON Config (Line Chart Has fixed 1 data series here)
+     var lineChartData = {
+         labels: ["January", "February", "March", "April", "May", "June", "July"],
+         datasets: [
+             {
+                 fillColor: "",
+                 data: [0]
+             }
+         ]
+
+     }
+
+     //Pie Chart JSON Config (Pie Chart Has fixed 3 Values/Slices here)
+     var pieChartdata = [
+         {
+             value: 0,
+             color: "#F7464A",
+             label: "East"
+         },
+         {
+             value: 0,
+             color: "#46BFBD",
+             label: "West"
+         },
+         {
+             value: 0,
+             color: "#FDB45C",
+             label: "North"
+         },
+         {
+             value: 0,
+             color: "#FE94DC",
+             label: "South"
+         }
+     ]
+
+     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+     //PieChart Update method
+     function UpdatePieChart(data) {
+         //Set data returned from Server
+         pieChartdata[0].value = data.value[0];
+         pieChartdata[1].value = data.value[1];
+         pieChartdata[2].value = data.value[2];
+         //Update the Line Chart
+         var canvasForPieChart = document.getElementById("canvasForPieChart");
+         var context2DPie = canvasForPieChart.getContext("2d");
+         canvasForPieChart.width = 400;
+         canvasForPieChart.height = 200;
+         //new Chart(context2DPie).Pie(pieChartdata);
+         new Chart(context2DPie, {
+             height: 200,
+             width: 400,
+             type: "pie",
+             data: {
+                 datasets: [{
+                     data: [
+                         10,
+                         20,
+                         30,
+                         40,
+                         50,
+                     ],
+                     backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                     label: 'Dataset 1'
+                 }],
+                 labels: [
+                     "Red",
+                     "Orange",
+                     "Yellow",
+                     "Green",
+                     "Blue"
+                 ]
+             },
+         });
+
+     }
+
+     //LineChart Update method
+     function UpdateLineChart(data) {
+         //Set data returned from Server
+         lineChartData.datasets[0].fillColor = data.colorString;
+         lineChartData.datasets[0].data = data.lineChartData;
+         //Update the Pie Chart
+         var canvasForLineChart = document.getElementById("canvasForLineChart");
+         canvasForLineChart.width = 400;
+         canvasForLineChart.height = 200;
+         var context2DLine = canvasForLineChart.getContext("2d");
+        // new Chart(context2DLine).Line(lineChartData);
+         new Chart(context2DLine, {
+             type: "line",
+             height: 200,
+             width: 400,
+             responsive: true,
+             maintainAspectRatio: true,
+             data: lineChartData,
+         });
+     }
+
+</script>
+}

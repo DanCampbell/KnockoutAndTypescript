@@ -22,6 +22,7 @@
         $(function () {
             // Reference the auto-generated proxy for the hub.
             var chat = $.connection.kidHub;
+            var chartHub = $.connection.chartHub;
             // Create a function that the hub can call back to display messages.
             chat.client.addNewMessageToPage = function (name, message) {
                 // Add the message to the page.

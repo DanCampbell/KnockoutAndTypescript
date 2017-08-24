@@ -1,0 +1,711 @@
+﻿@using System.Web.Script.Serialization
+@model KnockoutAndTypescript.ViewModels.ChildGraphViewModel
+@{
+    ViewBag.Title = "Statistics";
+}
+
+<h2>Statistics</h2>
+<div>
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group mr-2" role="group" aria-label="Child Graphs">
+            <button type="button" class="btn btn-secondary" id="btn_graph1">Graph 1</button>
+            <button type="button" class="btn btn-secondary" id="btn_graph2">2</button>
+            <button type="button" class="btn btn-secondary" id="btn_graph3">3</button>
+            <button type="button" class="btn btn-secondary" id="btn_graph4">4</button>
+            <button type="button" class="btn btn-secondary" id="btn_graph5">5</button>
+            <button type="button" class="btn btn-secondary" id="btn_graph6">6</button>
+            <button type="button" class="btn btn-secondary" id="btn_graph7">7</button>
+            <button type="button" class="btn btn-secondary" id="btn_graph8">8</button>
+        </div>
+        <div class="btn-group mr-2" role="group" aria-label="All Children Graphs">
+            <button type="button" class="btn btn-secondary" id="btn2_graph1">5</button>
+            <button type="button" class="btn btn-secondary">6</button>
+            <button type="button" class="btn btn-secondary">7</button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Third group">
+            <button type="button" class="btn btn-secondary">8</button>
+        </div>
+    </div>
+    <div style="
+    max-width: 75%;
+    height: 600px;
+    background-color: powderblue;
+">
+        <canvas id="canvasForChart" height="300" width="500">Chart is Loading...</canvas>
+    </div>
+    @*<table style="width: 100%">
+        <tr>
+           
+            <td style="text-align: center">
+                <canvas id="canvasForPieChart" height="200" width="400">Chart is Loading...</canvas>
+            </td>
+            <td style=" text-align: center">
+                <canvas id="canvasForLineChart" height="200" width="400">Chart is Loading...</canvas>
+
+            </td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <td style=" text-align: center">
+                <canvas id="canvasForLineChartDay" height="200" width="400">Chart is Loading...</canvas>
+
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style=" text-align: center">
+                <canvas id="canvasForLineChartMonth" height="400" width="600">Chart is Loading...</canvas>
+
+            </td>
+        </tr>
+        
+    </table>*@
+    @*<div>
+        <canvas id="canvasForBarChartDay" height="400" width="600">Chart is Loading...</canvas>
+    </div>
+    <div>
+        <canvas id="canvasForBarChartDay2" height="400" width="600">Chart is Loading...</canvas>
+    </div>
+    <div>
+        <canvas id="canvasForBarChartWeek1" height="400" width="600">Chart is Loading...</canvas>
+    </div>
+    <div>
+        <canvas id="canvasForBarChartWeek2" height="400" width="600">Chart is Loading...</canvas>
+    </div>
+    <div>
+        <canvas id="canvasForBarChartWeek4" height="400" width="600">Chart is Loading...</canvas> 
+    </div>
+    <div>
+        <canvas id="canvasForBarChartWeek5" height="400" width="600">Chart is Loading...</canvas>
+    </div>*@
+    @*<div>
+        <h3>All Children daily</h3>
+        <canvas id="canvasForBarChartDayAll" height="400" width="600">Chart is Loading...</canvas>
+    </div>*@
+</div>
+@section scripts {
+    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+    <script src="~/Scripts/Chart.js"></script>
+
+    <script>
+        function checkHTML5() {
+          
+
+            var canvasForLineChart = document.getElementById("canvasForLineChart");
+            if (canvasForLineChart == null || canvasForLineChart == "") {
+                document.write("Browser doesn't support HTML5 2D Context");
+                return false;
+            }
+            if (canvasForLineChart.getContext) {
+
+            }
+            else {
+                document.write("Browser doesn't support HTML5 2D Context");
+                return false;
+            }
+        }
+
+        $(function () {
+            //$("#target").click(function () {
+            //    alert("Handler for .click() called.");
+            //});
+            //If not HTML5 Support the Exit
+            //debugger;
+           // if (checkHTML5() == false) return;
+            var line_data =  @Html.Raw(Json.Encode(@Model.sevenDays));
+            var line_data2 =  @Html.Raw(Json.Encode(@Model.currentDay));
+            var line_data3 =  @Html.Raw(Json.Encode(@Model.lastMonth));
+            var bar_data1 = @Html.Raw(Json.Encode(@Model.groupPointsForDay));
+            var bar_data2 = @Html.Raw(Json.Encode(@Model.groupPointsForWeek));
+            var bar_data4 = @Html.Raw(Json.Encode(@Model.plusnegativeForWeek));
+            var bar_data5 = @Html.Raw(Json.Encode(@Model.plusnegativeForMonth));
+            var allChildren =  @Html.Raw(Json.Encode(ViewBag.AllChildren));
+            //Call to Update LineChart from Server
+            $("#btn_graph1").click(function () {
+                TheChart.destroy();
+                UpdateLineChart(line_data);  //Call the LineChart Update method
+            });
+            $("#btn_graph2").click(function () {
+                TheChart.destroy();
+                UpdateLineChart2(line_data2);  //Call the LineChart Update method
+            });
+            $("#btn_graph3").click(function () {
+                TheChart.destroy();
+                UpdateLineChart3(line_data3);  //Call the LineChart Update method
+            });
+            $("#btn_graph4").click(function () {
+                TheChart.destroy();
+                UpdateBarChart1(bar_data1);  //Call the LineChart Update method
+            });
+            $("#btn_graph5").click(function () {
+                TheChart.destroy();
+                UpdateBarChart2(bar_data1);  //Call the LineChart Update method
+            });
+            $("#btn_graph6").click(function () {
+                TheChart.destroy();
+                UpdateBarChart4(bar_data4);  //Call the LineChart Update method
+            });
+            $("#btn_graph7").click(function () {
+                TheChart.destroy();
+                UpdateBarChart5(bar_data5);  //Call the LineChart Update method
+            });
+            $("#btn_graph8").click(function () {
+                TheChart.destroy();
+                UpdateBarChartWeek1(bar_data2);  //Call the LineChart Update method
+            });
+            $("#btn2_graph1").click(function () {
+                TheChart.destroy();
+                UpdateLineChart4(allChildren);  //Call the LineChart Update method      To Add
+            });
+            UpdateLineChart(line_data);  //default
+
+            //UpdateLineChart(line_data);  //Call the LineChart Update method
+            //UpdateLineChart2(line_data2);  //Call the LineChart Update method
+            //UpdateLineChart3(line_data3);  //Call the LineChart Update method
+           // UpdateBarChart1(bar_data1);  //Call the LineChart Update method
+            //UpdateBarChart2(bar_data1);  //Call the LineChart Update method
+           // UpdateBarChartWeek1(bar_data2);  //Call the LineChart Update method
+           // UpdateBarChartWeek2(bar_data2);  //Call the LineChart Update method
+           // UpdateBarChartWeek3(bar_data3);  //Call the LineChart Update method
+           //UpdateLineChart4(allChildren);  //Call the LineChart Update method      To Add
+            //UpdateBarChart4(bar_data4);  //Call the LineChart Update method
+           // UpdateBarChart5(bar_data5);  //Call the LineChart Update method
+              //  UpdatePieChart(pie_data);     //Call the PieChart Update method
+
+        });
+</script>
+
+<script type="text/javascript">
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //Line Chart JSON Config (Line Chart Has fixed 1 data series here)
+        var TheChart = null;
+        
+       
+
+        //Pie Chart JSON Config (Pie Chart Has fixed 3 Values/Slices here)
+        var pieChartdata = [
+            {
+                value: 0,
+                color: "#F7464A",
+                label: "East"
+            },
+            {
+                value: 0,
+                color: "#46BFBD",
+                label: "West"
+            },
+            {
+                value: 0,
+                color: "#FDB45C",
+                label: "North"
+            },
+            {
+                value: 0,
+                color: "#FE94DC",
+                label: "South"
+            }
+        ]
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function GetLabels(data) {
+            var labels = [];
+            if (data != null) {
+                for (i = 0; i < data.length; i++) {
+                    labels.push(i.toString());
+                }
+            }
+            return labels;
+        }
+
+
+        //PieChart Update method
+        function UpdatePieChart(data) {
+            //Set data returned from Server
+            pieChartdata[0].value = data.value[0];
+            pieChartdata[1].value = data.value[1];
+            pieChartdata[2].value = data.value[2];
+            //Update the Line Chart
+            var canvasForPieChart = document.getElementById("canvasForPieChart");
+            var context2DPie = canvasForPieChart.getContext("2d");
+            canvasForPieChart.width = 400;
+            canvasForPieChart.height = 200;
+            //new Chart(context2DPie).Pie(pieChartdata);
+            new Chart(context2DPie, {
+                height: 200,
+                width: 400,
+                type: "pie",
+                data: {
+                    datasets: [{
+                        data: [
+                            10,
+                            20,
+                            30,
+                            40,
+                            50,
+                        ],
+                        backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                        label: 'Dataset 1'
+                    }],
+                    labels: [
+                        "Red",
+                        "Orange",
+                        "Yellow",
+                        "Green",
+                        "Blue"
+                    ]
+                },
+            });
+
+        }
+
+        //LineChart Update method
+        function UpdateLineChart(data) {
+            var lineChartData = {
+            labels: ["10", "20", "30", "40", "50", "60", "70"],
+            datasets: [
+                {
+                    fill: false,
+                    fillColor: "",
+                    data: [0]
+                }
+            ]
+
+        }
+            //Set data returned from Server
+            lineChartData.datasets[0].fillColor = data.colorString;
+            lineChartData.datasets[0].data = data;
+            lineChartData.labels = GetLabels(data);
+            //Update the Pie Chart
+            //var canvasForLineChart = document.getElementById("canvasForLineChart");
+            var canvasForLineChart = document.getElementById("canvasForChart");
+           // canvasForLineChart.width = 400;
+           // canvasForLineChart.height = 200;
+            var context2DLine = canvasForLineChart.getContext("2d");
+            // new Chart(context2DLine).Line(lineChartData);
+            TheChart = new Chart(context2DLine, {
+                type: "line",
+                height: 300,
+                width: 500,
+                responsive: true,
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: lineChartData,
+            });
+        }
+
+        //LineChart Update method
+        function UpdateLineChart2(data) {
+            var lineChartData2 = {
+                labels: ["a", "b", "c", "d", "e", "f", "g"],
+                datasets: [
+                    {
+                        fill: false,
+                        fillColor: "",
+                        data: [0]
+                    }
+                ]
+            }
+            //Set data returned from Server
+            //debugger;
+            //var labels = [];
+            //for (i = 0; i < data.length; i++)
+            //{
+            //    labels.push(i.toString());
+            //}
+
+            console.log(lineChartData2);
+            //lineChartData2.datasets[0].fillColor = data.colorString;
+            lineChartData2.datasets[0].data = data;
+            lineChartData2.labels = GetLabels(data);
+            //Update the Pie Chart
+           // var canvasForLineChart = document.getElementById("canvasForLineChartDay");
+            var canvasForLineChart = document.getElementById("canvasForChart");
+         //   canvasForLineChart.width = 400;
+         //   canvasForLineChart.height = 200;
+            var context2DLine = canvasForLineChart.getContext("2d");
+            // new Chart(context2DLine).Line(lineChartData);
+            TheChart = new Chart(context2DLine, {
+                type: "line",
+               height: 300,
+               width: 500,
+                responsive: true,
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: lineChartData2,
+            });
+        }
+
+        //LineChart Update method
+        function UpdateLineChart3(data) {
+           // debugger;
+            var lineChartData3 = {
+                labels: [],
+                datasets: [
+                    {
+                        fill: false,
+                        fillColor: "",
+                        data: [0]
+                    }
+                ]
+            }
+           // console.log(lineChartData2);
+           // lineChartData3.datasets[0].fillColor = data.colorString;
+            lineChartData3.datasets[0].data = data;
+            lineChartData3.labels = GetLabels(data);
+            //Update the Pie Chart
+            var canvasForLineChart = document.getElementById("canvasForChart");
+            canvasForLineChart.width = 600;
+            canvasForLineChart.height = 400;
+            var context2DLine = canvasForLineChart.getContext("2d");
+            // new Chart(context2DLine).Line(lineChartData);
+            TheChart = new Chart(context2DLine, {
+                type: "line",
+                height: 400,
+                width: 600,
+                responsive: true,
+                fill:false,
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: lineChartData3,
+            });
+        }
+
+
+        //LineChart Update method
+        function UpdateLineChart4(data) {
+           // debugger;
+            var lineChartData4 = {
+                labels: ["10", "20", "30", "40", "50", "60", "70"],
+                datasets: [
+                    {
+                        fill: false,
+                        fillColor: "",
+                        data: [0]
+                    }
+                ]
+            }
+
+            var graphColour = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#d45850", "#e45850"];
+            for (i = 0; i < data.length; i++) {
+                var obj = data[i];
+                if (i > 0) {
+                    var lineChartDatax = {
+                        label: obj.ChildName,                        
+                        fill: false,
+                        borderColor: graphColour[i],
+                                data: obj.currentDay                          
+                        
+                    }
+                    lineChartData4.datasets.push(lineChartDatax);
+                }
+                else {
+                    lineChartData4.datasets[0].data = obj.currentDay;
+                    lineChartData4.datasets[0].label = obj.ChildName;
+                    lineChartData4.datasets[0].borderColor = graphColour[0];
+                }
+                
+            }
+            var canvasForLineChart = document.getElementById("canvasForChart");
+            canvasForLineChart.width = 600;
+            canvasForLineChart.height = 400;
+            var context2DLine = canvasForLineChart.getContext("2d");
+            // new Chart(context2DLine).Line(lineChartData);
+            TheChart = new Chart(context2DLine, {
+                type: "line",
+                height: 400,
+                width: 600,
+                responsive: true,
+                fill: false,
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: lineChartData4,
+            });
+        }
+
+        function UpdateBarChart4(data) {
+            //debugger;
+            var barChartData4 = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Positives",
+                        fill: false,
+                        backgroundColor: "#8d5ea2",
+                        data: [0]
+                    }
+                ]
+            }
+
+            var labels = [];
+            var positives = [];
+            var negatives = [];
+          
+            for (i = 0; i < data.length; i++) {
+                var obj = data[i];               
+                positives.push(obj.sumpositive);
+                negatives.push(obj.sumnegative);
+            }           
+
+            barChartData4.datasets[0].data = positives;
+            barChartData4.labels = GetLabels(data);
+            var barChartDatax = {
+                label:"Negative",
+                fill: false,
+                backgroundColor: "#3cba9f",
+                data: negatives,
+            }
+            barChartData4.datasets.push(barChartDatax);
+
+            //Update the Chart
+            var canvasForChart = document.getElementById("canvasForChart");
+            canvasForChart.width = 600;
+            canvasForChart.height = 400;
+            var context2DLine = canvasForChart.getContext("2d");
+
+            TheChart = new Chart(context2DLine, {
+                type: "bar",
+                height: 400,
+                width: 600,
+                responsive: true,                
+                maintainAspectRatio: true,              
+                data: barChartData4,
+            });
+        }
+
+        function UpdateBarChart5(data) {
+            //debugger;
+            var barChartData5 = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Positives",
+                        fill: false,
+                        backgroundColor: "#8d5ea2",
+                        data: [0]
+                    }
+                ]
+            }
+
+            var labels = [];
+            var positives = [];
+            var negatives = [];
+
+            for (i = 0; i < data.length; i++) {
+                var obj = data[i];
+                positives.push(obj.sumpositive);
+                negatives.push(obj.sumnegative);
+            }
+
+            barChartData5.datasets[0].data = positives;
+            barChartData5.labels = GetLabels(data);
+            var barChartDatax = {
+                label: "Negative",
+                fill: false,
+                backgroundColor: "#3cba9f",
+                data: negatives,
+            }
+            barChartData5.datasets.push(barChartDatax);
+
+            //Update the Chart
+            var canvasForChart = document.getElementById("canvasForChart");
+            canvasForChart.width = 600;
+            canvasForChart.height = 400;
+            var context2DLine = canvasForChart.getContext("2d");
+
+            TheChart = new Chart(context2DLine, {
+                type: "bar",
+                height: 400,
+                width: 600,
+                responsive: true,
+                maintainAspectRatio: true,
+                data: barChartData5,
+            });
+        }
+
+        //LineChart Update method
+        function UpdateBarChart1(data) {
+            //debugger;
+            var barChartData1 = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Points by Behaviour",
+                        fill: false,
+                        backgroundColor: "#3e95cd",
+                        data: [0]
+                    }
+                ]
+            }
+            var labels = [];
+            var counts = [];
+            var sums = [];
+            //var color = Chart.helpers.color;
+            //var testred = color(window.chartColors.red).alpha(0.5).rgbString();
+
+            for (i = 0; i < data.length; i++) {
+                var obj = data[i];
+                labels.push(obj.name);
+                sums.push(obj.sum);
+                counts.push(obj.count);
+            }
+            
+           // console.log(barChartData1);
+           
+            barChartData1.datasets[0].data = sums;
+            barChartData1.labels = labels;
+            //Update the Chart
+            var canvasForChart = document.getElementById("canvasForChart");
+           // canvasForChart.width = 600;
+           // canvasForChart.height = 400;
+            var context2DLine = canvasForChart.getContext("2d");
+            
+            TheChart = new Chart(context2DLine, {
+                type: "bar",
+                height: 400,
+                width: 600,
+                responsive: true,
+                fill: true,
+                backgroundColor: "#3e95cd",
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: barChartData1,
+            });
+        }
+
+        //LineChart Update method
+        function UpdateBarChart2(data) {
+            //debugger;
+            var barChartData2 = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Incidences of Behaviour",
+                        fill: false,
+                        backgroundColor: "#8e5ea2",
+                        data: [0]
+                    }
+                ]
+            }
+
+            var labels = [];
+            var counts = [];
+            var sums = [];
+           
+            for (i = 0; i < data.length; i++) {
+                var obj = data[i];
+                labels.push(obj.name);
+                sums.push(obj.sum);
+                counts.push(obj.count);
+            }
+            
+            barChartData2.datasets[0].data = counts;
+            barChartData2.labels = labels;
+            //Update the Chart
+            var canvasForChart = document.getElementById("canvasForChart");
+            canvasForChart.width = 600;
+            canvasForChart.height = 400;
+            var context2DLine = canvasForChart.getContext("2d");
+
+            TheChart = new Chart(context2DLine, {
+                type: "bar",
+                height: 400,
+                width: 600,
+                responsive: true,
+                fill: true,
+                backgroundColor: "#3e95cd",
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: barChartData2,
+            });
+        }
+
+        //LineChart Update method
+        function UpdateBarChartWeek1(data) {
+            //debugger;
+            var barChartData3 = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Weekly Points for Behaviour",
+                        fill: false,
+                        backgroundColor: "#8e5ea2",
+                        data: [0]
+                    }
+                ]
+            }
+
+            var labels = [];
+            var counts = [];
+            var sums = [];
+          
+            for (i = 0; i < data.length; i++) {
+                var obj = data[i];
+                labels.push(obj.name);
+                sums.push(obj.sum);
+                counts.push(obj.count);
+            }
+
+            //var barChartDataWeek1 = new barChartData1();
+
+            barChartData3.datasets[0].data = sums;
+            barChartData3.labels = labels;
+            //Update the Chart
+            var canvasForChart = document.getElementById("canvasForChart");
+            canvasForChart.width = 600;
+            canvasForChart.height = 400;
+            var context2DLine = canvasForChart.getContext("2d");
+
+            TheChart = new Chart(context2DLine, {
+                type: "bar",
+                height: 400,
+                width: 600,
+                responsive: true,
+                fill: true,
+                backgroundColor: "#3e95cd",
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: barChartData3,
+            });
+        }
+
+        //LineChart Update method
+        function UpdateBarChartAllChildren(data) {
+            //debugger;
+            var labels = [];
+            var counts = [];
+            var sums = [];
+
+            for (i = 0; i < data.length; i++) {
+                var obj = data[i];
+                labels.push(obj.name);
+                sums.push(obj.sum);
+                counts.push(obj.count);
+            }
+
+            //var barChartDataWeek1 = new barChartData1();
+
+            barChartData4.datasets[0].data = counts;
+            barChartData4.labels = labels;
+            //Update the Chart
+            var canvasForChart = document.getElementById("canvasForBarChartWeek2");
+            canvasForChart.width = 600;
+            canvasForChart.height = 400;
+            var context2DLine = canvasForChart.getContext("2d");
+
+            TheChart = new Chart(context2DLine, {
+                type: "bar",
+                height: 400,
+                width: 600,
+                responsive: true,
+                fill: true,
+                backgroundColor: "#3e95cd",
+                maintainAspectRatio: true,
+                //data: lineChartData,
+                data: barChartData4,
+            });
+        }
+
+</script>
+}
+

@@ -196,12 +196,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Business\Business.cs" />
+    <Compile Include="ChartDataUpdate.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\ChartHub.cs" />
     <Compile Include="Hubs\KidHub.cs" />
     <Compile Include="Migrations\201705101622313_behaviour.cs" />
     <Compile Include="Migrations\201705101622313_behaviour.Designer.cs">
@@ -329,7 +331,10 @@
     <Compile Include="Models\RewardAwarded.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AllChildrenGraphViewModel.cs" />
     <Compile Include="ViewModels\ChildDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ChildGraphViewModel.cs" />
+    <Compile Include="ViewModels\GraphCollectionViewModel.cs" />
     <Compile Include="ViewModels\PointReviewVM.cs" />
     <Compile Include="ViewModels\RewardsViewModel.cs" />
   </ItemGroup>
@@ -354,6 +359,8 @@
     </Content>
     <Content Include="package.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\dropzone\basic.css" />
     <Content Include="Scripts\dropzone\basic.min.css" />
     <Content Include="Scripts\dropzone\dropzone-amd-module.js" />
@@ -436,6 +443,8 @@
     <Content Include="Views\Home\ContributorList.cshtml" />
     <Content Include="Views\Home\UploadContributorImage.cshtml" />
     <Content Include="Views\Home\PointsTicker.cshtml" />
+    <Content Include="Views\Home\GraphTest.cshtml" />
+    <Content Include="Views\Home\Statistics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -473,6 +482,7 @@
     <TypeScriptCompile Include="Scripts\PointsTicker.ts" />
     <TypeScriptCompile Include="Scripts\ReviewPoints.ts" />
     <TypeScriptCompile Include="Scripts\TestModule.ts" />
+    <TypeScriptCompile Include="Scripts\typings\chartjs\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\KidipointsClasses.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.mapping\knockout.mapping.d.ts" />

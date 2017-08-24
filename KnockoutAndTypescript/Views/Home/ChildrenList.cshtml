@@ -64,7 +64,9 @@
                 <th>Age</th>
                 <th>Gender</th>
                 <th></th>
+                <th></th>
                 <th>Child Link</th>
+                
                 <th></th>
                 <th></th>
             </tr>
@@ -86,6 +88,11 @@
                 <td data-bind="text: ChildSex == true ? 'male': 'female'"></td>
                 <td>
                     <a data-bind="attr: { 'href': '@Url.Action("ReviewPoints", "Home")' + '/' + ChildId  }">Review Points                     
+                    </a>
+                </td>
+                <td>
+                    <a data-bind="attr: { 'href': '@Url.Action("Statistics", "Home")' + '/' + ChildId  }">
+                        Statistics
                     </a>
                 </td>
                 <td>@ViewBag.ChildDetailUri<span data-bind="text:'/' + ChildId + '/?Parent=' +ParentUser + '&Code='+ UserAuthCode"> </span></td>

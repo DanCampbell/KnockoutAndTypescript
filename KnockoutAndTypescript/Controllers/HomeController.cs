@@ -10,6 +10,10 @@ using Microsoft.AspNet.SignalR;
 using KnockoutAndTypescript.ViewModels;
 using KnockoutAndTypescript.Hubs;
 using System.IO;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace KnockoutAndTypescript.Controllers
 {
@@ -41,12 +45,17 @@ namespace KnockoutAndTypescript.Controllers
             return View();
         }
 
+        public ActionResult GraphTest()
+        {
+            return View();
+        }
+
         public ActionResult PointsTicker()
         {
             return View();
         }
 
-        public ActionResult UploadUserImage(int id=1)
+        public ActionResult UploadUserImage(int id = 1)
         {
             var model = BL.GetChildForId(id);
             return View(model);
@@ -71,10 +80,10 @@ namespace KnockoutAndTypescript.Controllers
                     HttpPostedFileBase file = Request.Files[fileName];
                     //Save file content goes here
                     fName = file.FileName;
-                    
+
                     if (file != null && file.ContentLength > 0)
                     {
-                      //  var originalDirectory = new DirectoryInfo(string.Format("{0}Images\\Content\\UserImages", Server.MapPath(@"\")));
+                        //  var originalDirectory = new DirectoryInfo(string.Format("{0}Images\\Content\\UserImages", Server.MapPath(@"\")));
                         var originalDirectory = new DirectoryInfo(string.Format("{0}Content\\UserImages", Server.MapPath(@"\")));
 
                         string pathString = System.IO.Path.Combine(originalDirectory.ToString(), "imagepath");
@@ -86,7 +95,7 @@ namespace KnockoutAndTypescript.Controllers
                         if (!isExists)
                             System.IO.Directory.CreateDirectory(pathString);
 
-                      //  var path = string.Format("{0}\\{1}", pathString, fName);
+                        //  var path = string.Format("{0}\\{1}", pathString, fName);
                         var path = string.Format("{0}\\{1}", pathString, file.FileName);
 
                         file.SaveAs(path);
@@ -139,7 +148,7 @@ namespace KnockoutAndTypescript.Controllers
 
                         if (!isExists)
                             System.IO.Directory.CreateDirectory(pathString);
-                       
+
                         var path = string.Format("{0}\\{1}", pathString, file.FileName);
 
                         file.SaveAs(path);
@@ -172,6 +181,297 @@ namespace KnockoutAndTypescript.Controllers
             //var hubConnection = new Microsoft.AspNet.SignalR.HubConnection("http://your_end_point:port/");
 
             return View();
+        }
+        // public class testservice{
+
+        public async Task<AllChildrenGraphViewModel> GetComparisonGraphAsync(int ChildId)
+        {
+            var model = new ChildGraphViewModel();
+            var rtn = new AllChildrenGraphViewModel();
+            //var p1 = BL.GetGroupedPointsforDayGraphAsync(ChildId);
+            //var p2 = BL.GetPlusNegativePointsforLastMonthAsync(ChildId);
+            //var p3 = BL.GetGroupedPointsforWeekGraphAsync(ChildId);
+            //var p4 = BL.GetPointsforLastSevenDaysAsync(ChildId);
+            var p5 = await BL.GetPointsforDayGraphAsync(ChildId);
+            //var p6 = BL.GetPointsforLastMonthAsync(ChildId);
+            //var p7 = BL.GetPlusNegativePointsforLastWeekAsync(ChildId);
+
+
+            //  Task.WhenAll( p5);
+            //model.groupPointsForDay = p1.Result;
+            //model.plusnegativeForMonth = p2.Result;
+            //model.groupPointsForWeek = p3.Result;
+            //model.sevenDays = p4.Result;
+            model.currentDay = p5;// p5.Result;
+                //model.lastMonth = p6.Result;
+                //model.plusnegativeForWeek = p7.Result;
+            rtn.ChildGraph = model;
+           
+            return rtn;
+        }
+
+        public async Task<AllChildrenGraphViewModel> GetGraphAsync(int ChildId, BusinessRules BL, bool bGetAll)
+        {
+            var model = new ChildGraphViewModel();
+            var rtn = new AllChildrenGraphViewModel();
+            var p1 = BL.GetGroupedPointsforDayGraphAsync(ChildId);
+            var p2 = BL.GetPlusNegativePointsforLastMonthAsync(ChildId);
+            var p3 = BL.GetGroupedPointsforWeekGraphAsync(ChildId);
+            var p4 = BL.GetPointsforLastSevenDaysAsync(ChildId);
+            var p5 = BL.GetPointsforDayGraphAsync(ChildId);
+            var p6 = BL.GetPointsforLastMonthAsync(ChildId);
+            var p7 = BL.GetPlusNegativePointsforLastWeekAsync(ChildId);
+            if (bGetAll == true)
+            {
+                var p8 = GetAllChildrenGraphDataAsync();
+                Task.WhenAll(p1, p2, p3, p4, p5, p6, p7,p8);
+                // var allchildren = await GetAllChildrenGraphDataAsync();
+                //  rtn.ChildGraphList = allchildren;
+                model.groupPointsForDay = p1.Result;
+                model.plusnegativeForMonth = p2.Result;
+                model.groupPointsForWeek = p3.Result;
+                model.sevenDays = p4.Result;
+                model.currentDay = p5.Result;
+                model.lastMonth = p6.Result;
+                model.plusnegativeForWeek = p7.Result;
+                var allchildren = p8.Result;
+                rtn.ChildGraphList = allchildren;
+            }
+            else
+            {
+                Task.WhenAll(p1, p2, p3, p4, p5, p6, p7);
+                model.groupPointsForDay = p1.Result;
+                model.plusnegativeForMonth = p2.Result;
+                model.groupPointsForWeek = p3.Result;
+                model.sevenDays = p4.Result;
+                model.currentDay = p5.Result;
+                model.lastMonth = p6.Result;
+                model.plusnegativeForWeek = p7.Result;
+            }
+
+          //  Task.WhenAll(p1, p2, p3, p4, p5, p6, p7);
+
+            //model.groupPointsForDay = p1.Result;
+            //model.plusnegativeForMonth = p2.Result;
+            //model.groupPointsForWeek = p3.Result;
+            //model.sevenDays = p4.Result;
+            //model.currentDay = p5.Result;
+            //model.lastMonth = p6.Result;
+            //model.plusnegativeForWeek = p7.Result;
+
+             ////model.groupPointsForDay = await BL.GetGroupedPointsforDayGraphAsync(ChildId);
+             ////model.plusnegativeForMonth = await BL.GetPlusNegativePointsforLastMonthAsync(ChildId);
+             ////model.groupPointsForWeek = await BL.GetGroupedPointsforWeekGraphAsync(ChildId);
+             ////model.sevenDays = await BL.GetPointsforLastSevenDaysAsync(ChildId);
+             ////model.currentDay = await BL.GetPointsforDayGraphAsync(ChildId);
+             ////model.lastMonth = await BL.GetPointsforLastMonthAsync(ChildId);
+             ////model.plusnegativeForWeek = await BL.GetPlusNegativePointsforLastWeekAsync(ChildId);
+             rtn.ChildGraph = model;
+            //if (bGetAll == true) {
+            //   // var allchildren = await GetAllChildrenGraphDataAsync();
+            //   var allchildren = p8.
+            //    rtn.ChildGraphList = allchildren;
+            //}
+            return rtn;
+        }
+        //  }
+       // public class tservice{
+        public async Task<int> GetNumber()
+        {
+
+            //Thread.Sleep(1000);
+            var p2 = BL.GetPlusNegativePointsforLastMonthAsync(1);
+            //var r = p2.Result;
+            return 1;
+        }
+
+        public async Task<int> GetNumber2()
+        {
+            //Thread.Sleep(1000);
+            var p2 = BL.GetPlusNegativePointsforLastMonthAsync(1);
+            //var r = p2.Result;
+            //await Task.Delay(3000);
+            return 2;
+        }
+        public async Task<int> GetNumber3()
+        {
+            // Thread.Sleep(1000);
+            // await Task.Delay(3000);
+            var p2 =  BL.GetPlusNegativePointsforLastMonthAsync(1);
+            //var r = p2.Result;
+            return 3;
+
+        }
+   // }
+
+        public async Task<int> GetSum2()
+        {
+//          var ts = new tservice();
+            var s1 =   GetNumber();
+            var s2 =  GetNumber2();
+            var s3 =   GetNumber3();
+            await Task.WhenAll(s1, s2, s3);
+
+            var a =  s1.Result;
+            var b =  s2.Result;
+            var c =  s3.Result;
+
+            return a + b + c;
+        }
+
+        public async Task<int> GetSum()
+        {
+            //          var ts = new tservice();
+            var a = await GetNumber();
+            var b = await GetNumber2();
+            var c = await GetNumber3();
+            // Task.WhenAll(s1, s2, s3);
+
+            //var a = s1.Result;
+            //var b = s2.Result;
+            //var c = s3.Result;
+
+            return a + b + c;
+        }
+
+        [OutputCache(Duration = 0)]
+        public ActionResult Statistics(int Id)
+        {
+            var ChildId = Id;
+            //Stopwatch s3 = new Stopwatch();
+            //s3.Start();
+            //Task<int> t = GetSum();
+            //t.Wait();
+            //var r = t.Result;
+
+            //s3.Stop();
+            //var dur = s3.ElapsedMilliseconds;
+
+            //Stopwatch s4 = new Stopwatch();
+            //s4.Start();
+            //Task<int> t2 = GetSum2();
+            //t.Wait();
+            //var r2 = t.Result;
+
+            //s4.Stop();
+            //var dur2 = s4.ElapsedMilliseconds;
+
+
+            //Task<List<PointsPlusNegative>> task1= await BL.GetPlusNegativePointsforLastMonth(ChildId);
+            //Stopwatch s0 = new Stopwatch();
+            //s0.Start();
+            //var graphDataDayGroup = BL.GetGroupedPointsforDayGraph(ChildId);
+            //var graphDataWeekGroup = BL.GetGroupedPointsforWeekGraph(ChildId);
+            //var graphData = BL.GetPointsforLastSevenDays(ChildId);
+            //var graphDataDay = BL.GetPointsforDayGraph(ChildId);
+            //var graphDataMonth = BL.GetPointsforLastMonth(ChildId);
+            //var pointsPlusNegativeForWeek = BL.GetPlusNegativePointsforLastWeek(ChildId);
+            //List<PointsPlusNegative> pointsPlusNegativeForMonth = BL.GetPlusNegativePointsforLastMonth(ChildId);
+            //var temp = GetAllChildrenGraphData();
+            //s0.Stop();
+            //var el0 = s0.ElapsedMilliseconds;
+            //var testservice = new testservice();
+            //var test2 = testservice.TestReturn(ChildId,BL);
+            Stopwatch s1 = new Stopwatch();
+            s1.Start();
+            var modelasync = GetGraphAsync(ChildId, BL,true);
+            s1.Stop();
+            var el = s1.ElapsedMilliseconds;
+            
+            var model = new ChildGraphViewModel();
+            model.ChildId = ChildId;
+            model.ChildName = BL.GetChildForId(ChildId).ChildName;
+            model.sevenDays = modelasync.Result.ChildGraph.sevenDays;// graphData;
+            model.currentDay = modelasync.Result.ChildGraph.currentDay;// graphDataDay;
+            model.lastMonth = modelasync.Result.ChildGraph.lastMonth;//graphDataMonth;
+            model.groupPointsForDay = modelasync.Result.ChildGraph.groupPointsForDay;//graphDataDayGroup;
+            model.groupPointsForWeek = modelasync.Result.ChildGraph.groupPointsForWeek;//graphDataWeekGroup;
+            model.plusnegativeForWeek = modelasync.Result.ChildGraph.plusnegativeForWeek;
+            model.plusnegativeForMonth = modelasync.Result.ChildGraph.plusnegativeForMonth;
+            //var hubConnection = new Microsoft.AspNet.SignalR.HubConnection("http://your_end_point:port/");
+            // ViewBag.AllChildren = GetAllChildrenGraphData();
+            ViewBag.AllChildren = modelasync.Result.ChildGraphList;
+            return View(model);
+        }
+
+        private async Task<List<ChildGraphViewModel>> GetAllChildrenGraphDataAsync()
+        {
+            var gcvm = new ConcurrentQueue<ChildGraphViewModel>();
+            string current_user = User.Identity.Name;
+            var model = BL.GetChildren().Where(a => a.ParentUser == current_user).ToList();
+            //foreach (var child in model)
+            Parallel.ForEach(model, (child) =>
+            {                
+                    var viewmodel = new ChildGraphViewModel();
+                    viewmodel.ChildId = child.ChildId;
+                    viewmodel.ChildName = child.ChildName;
+                // var modelasync = await GetGraphAsync(child.ChildId, BL, false);
+                //var modelasync = GetGraphAsync(child.ChildId, BL, false);
+                var modelasync = GetComparisonGraphAsync(child.ChildId);
+                //viewmodel.sevenDays = modelasync.ChildGraph.sevenDays;// graphData;
+                //viewmodel.currentDay = modelasync.ChildGraph.currentDay;// graphDataDay;
+                //viewmodel.lastMonth = modelasync.ChildGraph.lastMonth;//graphDataMonth;
+                //viewmodel.groupPointsForDay = modelasync.ChildGraph.groupPointsForDay;//graphDataDayGroup;
+                //viewmodel.groupPointsForWeek = modelasync.ChildGraph.groupPointsForWeek;//graphDataWeekGroup;
+                //viewmodel.plusnegativeForWeek = modelasync.ChildGraph.plusnegativeForWeek;
+                //viewmodel.plusnegativeForMonth = modelasync.ChildGraph.plusnegativeForMonth;
+
+                //viewmodel.sevenDays = modelasync.Result.ChildGraph.sevenDays;// graphData;
+                viewmodel.currentDay = modelasync.Result.ChildGraph.currentDay;// graphDataDay;
+                //viewmodel.lastMonth = modelasync.Result.ChildGraph.lastMonth;//graphDataMonth;
+                //viewmodel.groupPointsForDay = modelasync.Result.ChildGraph.groupPointsForDay;//graphDataDayGroup;
+                //viewmodel.groupPointsForWeek = modelasync.Result.ChildGraph.groupPointsForWeek;//graphDataWeekGroup;
+                //viewmodel.plusnegativeForWeek = modelasync.Result.ChildGraph.plusnegativeForWeek;
+                //viewmodel.plusnegativeForMonth = modelasync.Result.ChildGraph.plusnegativeForMonth;
+
+                gcvm.Enqueue(viewmodel);
+                });
+
+            //return GetAllChildrenGraphData();
+            return gcvm.ToList();
+            }
+
+        
+
+        private List<ChildGraphViewModel> GetAllChildrenGraphData()
+        {
+            string current_user = User.Identity.Name;
+            var model = BL.GetChildren().Where(a => a.ParentUser == current_user).ToList();
+
+            var gcvm = new List<ChildGraphViewModel>(); ;
+            //foreach(var child in model)
+            Parallel.ForEach(model, (child) =>
+             {
+                //var graphDataDayGroup = BL.GetGroupedPointsforDayGraph(child.ChildId);
+                //var graphDataWeekGroup = BL.GetGroupedPointsforWeekGraph(child.ChildId);
+                //var graphData = BL.GetPointsforLastSevenDays(child.ChildId);
+                //var graphDataDay = BL.GetPointsforDayGraph(child.ChildId);
+                //var graphDataMonth = BL.GetPointsforLastMonth(child.ChildId);
+                //var pointsPlusNegativeForWeek = BL.GetPlusNegativePointsforLastWeek(child.ChildId);
+                //var pointsPlusNegativeForMonth = BL.GetPlusNegativePointsforLastMonth(child.ChildId);
+                var viewmodel = new ChildGraphViewModel();
+                 viewmodel.ChildId = child.ChildId;
+                 viewmodel.ChildName = child.ChildName;
+                //viewmodel.sevenDays = graphData;
+                //viewmodel.currentDay = graphDataDay;
+                //viewmodel.lastMonth = graphDataMonth;
+                //viewmodel.groupPointsForDay = graphDataDayGroup;
+                //viewmodel.groupPointsForWeek = graphDataWeekGroup;
+                //viewmodel.plusnegativeForWeek = pointsPlusNegativeForWeek;
+                //viewmodel.plusnegativeForMonth = pointsPlusNegativeForMonth;
+                var modelasync = GetGraphAsync(child.ChildId, BL, false);
+
+                 viewmodel.sevenDays = modelasync.Result.ChildGraph.sevenDays;// graphData;
+                viewmodel.currentDay = modelasync.Result.ChildGraph.currentDay;// graphDataDay;
+                viewmodel.lastMonth = modelasync.Result.ChildGraph.lastMonth;//graphDataMonth;
+                viewmodel.groupPointsForDay = modelasync.Result.ChildGraph.groupPointsForDay;//graphDataDayGroup;
+                viewmodel.groupPointsForWeek = modelasync.Result.ChildGraph.groupPointsForWeek;//graphDataWeekGroup;
+                viewmodel.plusnegativeForWeek = modelasync.Result.ChildGraph.plusnegativeForWeek;
+                 viewmodel.plusnegativeForMonth = modelasync.Result.ChildGraph.plusnegativeForMonth;
+
+                 gcvm.Add(viewmodel);
+             });
+            return gcvm;
         }
 
         [System.Web.Mvc.Authorize]

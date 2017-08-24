@@ -5,10 +5,24 @@ using System.Web;
 using KnockoutAndTypescript.Models;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Threading.Tasks;
 
 
 namespace KnockoutAndTypescript.Business
 {
+    public class PointsGraph
+    {
+        public string name { get; set; }
+        public int count { get; set; }
+        public int sum { get; set; }
+    }
+
+    public class PointsPlusNegative
+    {
+        public int sumpositive { get; set; }
+        public int sumnegative { get; set; }
+    }
+
     public class BusinessRules
     {
         private const string CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -569,5 +583,289 @@ namespace KnockoutAndTypescript.Business
             
             return ;
         }
+
+        //Graph Statistics Methods
+
+        public async Task<List<int>> GetPointsforLastSevenDaysAsync(int ChildId)
+        {
+            return GetPointsforLastSevenDays(ChildId);
+        }
+        public List<int> GetPointsforLastSevenDays(int ChildId)
+        {
+            var rtnary = new int[7];
+            using (var db = new ModelKids())
+            {
+                for (int i = 0; i < 6; i++) { 
+                var today = DateTime.Today;
+                    var dayend = today.AddDays(-i+1).AddSeconds(-1);
+                    var daystart = today.AddDays(-i);
+                    var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= daystart && a.AllocationDate <= dayend);
+                    var pointstest = db.PointAllocation.Where(a => a.ChildId == ChildId &&  a.AllocationDate <= dayend);
+                    if (points.Count() > 0)
+                    {
+                        var sumpoints = points.Sum(a => a.Points);
+                        rtnary[i] = sumpoints;
+                    }
+                }
+
+                return rtnary.ToList();
+            }           
+        }
+
+        public async Task<List<int>> GetPointsforLastMonthAsync(int ChildId)
+        {
+            return GetPointsforLastMonth(ChildId);
+        }
+        public List<int> GetPointsforLastMonth(int ChildId)
+        {
+            var today = DateTime.Today;
+            var endoftoday = today.AddDays(1).AddSeconds(-1);
+            var daystart = today;
+            var onemonthago = endoftoday.AddMonths(-1);
+            using (var db = new ModelKids())
+            {
+                var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= onemonthago && a.AllocationDate <= endoftoday).OrderByDescending(a => a.AllocationDate);
+
+                if (points.Count() > 0)
+                {
+                    var cnt = points.Count();
+                    var rtnary = new int[points.Count()];
+                    //var currentrange = points.First().Points;
+                    int nextidx = 0;
+                    //rtnary[nextidx] = currentrange;
+                    int currentrange = 0;
+
+                    foreach (var p in points)
+                    {
+
+                        currentrange = currentrange + p.Points;
+                        rtnary[nextidx] = currentrange;
+                        nextidx = nextidx + 1;
+                    }
+
+                    return rtnary.ToList();
+                }
+            }
+            return null;
+        }
+
+        //public PointsPlusNegative GetPlusNegativePointsforLastMonth(int ChildId)
+        //{
+        //    var today = DateTime.Today;
+        //    var endoftoday = today.AddDays(1).AddSeconds(-1);
+        //    var daystart = today;
+        //    var onemonthago = endoftoday.AddMonths(-1);
+        //    using (var db = new ModelKids())
+        //    {
+        //        var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= onemonthago && a.AllocationDate <= endoftoday).OrderByDescending(a => a.AllocationDate);
+        //        var positive = points.Where(a => a.Points > 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+        //        var negative = points.Where(a => a.Points < 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+
+
+        //        var rtnvar = new PointsPlusNegative { sumpositive = positive, sumnegative = negative };
+        //        return rtnvar;
+        //    }
+        //    //return null;
+        //}
+
+        public List<PointsPlusNegative> GetPlusNegativePointsforLastWeek(int ChildId)
+        {
+            var today = DateTime.Today;
+            var endoftoday = today.AddDays(1).AddSeconds(-1);
+            var daystart = today;
+            var onedayago = endoftoday.AddDays(-1);
+            var rtnlist = new List<PointsPlusNegative>();
+
+            using (var db = new ModelKids())
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= onedayago && a.AllocationDate <= endoftoday).OrderByDescending(a => a.AllocationDate);
+                    var positive = points.Where(a => a.Points > 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+                    var negative = points.Where(a => a.Points < 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+
+                    var pn = new PointsPlusNegative { sumpositive = positive, sumnegative = negative };
+                    rtnlist.Add(pn);
+                    endoftoday = endoftoday.AddDays(-1);
+                    onedayago = onedayago.AddDays(-1);
+                }
+
+                return rtnlist;
+            }           
+        }
+
+        public async Task<List<PointsPlusNegative>> GetPlusNegativePointsforLastWeekAsync(int ChildId)
+        {
+            var today = DateTime.Today;
+            var endoftoday = today.AddDays(1).AddSeconds(-1);
+            var daystart = today;
+            var onedayago = endoftoday.AddDays(-1);
+            var rtnlist = new List<PointsPlusNegative>();
+
+            using (var db = new ModelKids())
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= onedayago && a.AllocationDate <= endoftoday).OrderByDescending(a => a.AllocationDate);
+                    var positive = points.Where(a => a.Points > 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+                    var negative = points.Where(a => a.Points < 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+
+                    var pn = new PointsPlusNegative { sumpositive = positive, sumnegative = negative };
+                    rtnlist.Add(pn);
+                    endoftoday = endoftoday.AddDays(-1);
+                    onedayago = onedayago.AddDays(-1);
+                }
+
+                return rtnlist;
+            }
+        }
+
+        public List<PointsPlusNegative> GetPlusNegativePointsforLastMonth(int ChildId)
+        {
+            var today = DateTime.Today;
+            var endoftoday = today.AddDays(1).AddSeconds(-1);
+            var daystart = today;
+            var onedayago = endoftoday.AddDays(-1);
+            var rtnlist = new List<PointsPlusNegative>();
+            var lastday = endoftoday.AddMonths(-1);
+
+            using (var db = new ModelKids())
+            {
+                do
+                {
+                    var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= onedayago && a.AllocationDate <= endoftoday).OrderByDescending(a => a.AllocationDate);
+                    var positive = points.Where(a => a.Points > 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+                    var negative = points.Where(a => a.Points < 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+
+                    var pn = new PointsPlusNegative { sumpositive = positive, sumnegative = negative };
+                    rtnlist.Add(pn);
+                    endoftoday = endoftoday.AddDays(-1);
+                    onedayago = onedayago.AddDays(-1);
+                } while (endoftoday > lastday);
+
+                return rtnlist;
+            }
+            //return null;
+        }
+
+        public async Task<List<PointsPlusNegative>> GetPlusNegativePointsforLastMonthAsync(int ChildId)
+        {
+            var today = DateTime.Today;
+            var endoftoday = today.AddDays(1).AddSeconds(-1);
+            var daystart = today;
+            var onedayago = endoftoday.AddDays(-1);
+            var rtnlist = new List<PointsPlusNegative>();
+            var lastday = endoftoday.AddMonths(-1);
+
+            using (var db = new ModelKids())
+            {
+                do
+                {
+                    var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= onedayago && a.AllocationDate <= endoftoday).OrderByDescending(a => a.AllocationDate);
+                    var positive = points.Where(a => a.Points > 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+                    var negative = points.Where(a => a.Points < 0).Select(a => a.Points).DefaultIfEmpty(0).Sum();
+
+                    var pn = new PointsPlusNegative { sumpositive = positive, sumnegative = negative };
+                    rtnlist.Add(pn);
+                    endoftoday = endoftoday.AddDays(-1);
+                    onedayago = onedayago.AddDays(-1);
+                } while (endoftoday > lastday);
+
+                return rtnlist;
+            }
+            //return null;
+        }
+        public async Task<List<int>> GetPointsforDayGraphAsync(int ChildId)
+        {
+            return GetPointsforDayGraph(ChildId);
+        }
+        public List<int> GetPointsforDayGraph(int ChildId)
+        {            
+            using (var db = new ModelKids())
+            {                
+                    var today = DateTime.Today;
+                    var dayend = today.AddDays(1).AddSeconds(-1);
+                    var daystart = today;
+                    var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= daystart && a.AllocationDate <= dayend).OrderByDescending(a => a.AllocationDate);
+
+                if (points.Count() > 0) { 
+                    var cnt = points.Count();
+                    var rtnary = new int[points.Count()];                    
+                    int nextidx = 0;                    
+                    int currentrange = 0;
+
+                    foreach( var p in points)
+                    {                        
+                        currentrange = currentrange + p.Points;
+                        rtnary[nextidx] = currentrange;
+                        nextidx = nextidx + 1;
+                    }
+
+                    return rtnary.ToList();
+                }
+                return null;
+            }
+        }
+
+        public async Task<List<PointsGraph>> GetGroupedPointsforDayGraphAsync(int ChildId)
+        {
+            return GetGroupedPointsforDayGraph(ChildId);
+        }
+        public List<PointsGraph> GetGroupedPointsforDayGraph(int ChildId)
+        {
+            var glist = new List<PointsGraph>();
+            using (var db = new ModelKids())
+            {
+                var today = DateTime.Today;
+                var dayend = today.AddDays(1).AddSeconds(-1);
+                var daystart = today;
+                var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= daystart && a.AllocationDate <= dayend).OrderByDescending(a => a.AllocationDate);
+                //var points2 = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= daystart && a.AllocationDate <= dayend).OrderByDescending(a => a.AllocationDate).ToList();
+                //var grouped = points.GroupBy(a => a.PointId).Select( p => new { id = p.PointId, point = p.Points }) ;
+                var grouped = points.GroupBy(a => a.BehaviourId);
+                               
+                foreach ( var g in grouped)
+                {
+                    var sum = g.Sum(a => a.Points);
+                    var count = g.Count();
+                    var name = db.Behaviour.First(a => a.BehaviourId == g.Key).BehaviourName;
+                    glist.Add(new PointsGraph { name = name, count = count, sum = sum });
+                }                
+            }
+
+            return glist;
+            }
+
+        public async Task<List<PointsGraph>> GetGroupedPointsforWeekGraphAsync(int ChildId)
+        {
+            return GetGroupedPointsforWeekGraph(ChildId);
+        }
+        public List<PointsGraph> GetGroupedPointsforWeekGraph(int ChildId)
+        {
+            var glist = new List<PointsGraph>();
+            using (var db = new ModelKids())
+            {
+                var today = DateTime.Today;
+                var dayend = today.AddDays(1).AddSeconds(-1);
+                var daystart = DateTime.Now;
+                var weekend = DateTime.Today.AddDays(-7);
+                var points = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= weekend && a.AllocationDate <= dayend).OrderByDescending(a => a.AllocationDate);
+                //var points2 = db.PointAllocation.Where(a => a.ChildId == ChildId && a.AllocationDate >= daystart && a.AllocationDate <= dayend).OrderByDescending(a => a.AllocationDate).ToList();
+                //var grouped = points.GroupBy(a => a.PointId).Select( p => new { id = p.PointId, point = p.Points }) ;
+                var grouped = points.GroupBy(a => a.BehaviourId);
+
+                foreach (var g in grouped)
+                {
+                    var sum = g.Sum(a => a.Points);
+                    var count = g.Count();
+                    var name = db.Behaviour.First(a => a.BehaviourId == g.Key).BehaviourName;
+                    glist.Add(new PointsGraph { name = name, count = count, sum = sum });
+                }
+            }
+
+            return glist;
+        }
+
     }
+    
 }
