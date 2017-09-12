@@ -1,0 +1,531 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Test1" xml:space="preserve">
+    <value>[
+    {
+        "PointId": 131,
+        "ChildId": 2,
+        "AllocationDate": "2017-07-18T14:28:57.117",
+        "Points": 250,
+        "BehaviourId": 9,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 132,
+        "ChildId": 2,
+        "AllocationDate": "2017-07-18T14:28:58.41",
+        "Points": 100,
+        "BehaviourId": 29,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 133,
+        "ChildId": 2,
+        "AllocationDate": "2017-07-18T14:29:01.22",
+        "Points": 100,
+        "BehaviourId": 29,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 1159,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-03T14:04:11.933",
+        "Points": 30,
+        "BehaviourId": 6,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 1162,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-03T14:07:36.973",
+        "Points": 30,
+        "BehaviourId": 6,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 1164,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-03T14:25:11.997",
+        "Points": 30,
+        "BehaviourId": 6,
+        "Saved": false,
+        "ContributorId": 2,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2172,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-06T18:44:50.787",
+        "Points": 100,
+        "BehaviourId": 29,
+        "Saved": false,
+        "ContributorId": 1,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2175,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-06T20:28:02.443",
+        "Points": 30,
+        "BehaviourId": 6,
+        "Saved": false,
+        "ContributorId": 4,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2176,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-06T20:28:04.267",
+        "Points": 100,
+        "BehaviourId": 29,
+        "Saved": false,
+        "ContributorId": 4,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2206,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-08T20:52:27.203",
+        "Points": 10,
+        "BehaviourId": 42,
+        "Saved": false,
+        "ContributorId": 4,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2207,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-08T20:53:45.513",
+        "Points": -30,
+        "BehaviourId": 2,
+        "Saved": false,
+        "ContributorId": 4,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2208,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-08T20:54:14.25",
+        "Points": -100,
+        "BehaviourId": 17,
+        "Saved": false,
+        "ContributorId": 4,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2209,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-08T20:54:39.053",
+        "Points": -30,
+        "BehaviourId": 2,
+        "Saved": false,
+        "ContributorId": 4,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2252,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:40.097",
+        "Points": 50,
+        "BehaviourId": 43,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2253,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:41.637",
+        "Points": 100,
+        "BehaviourId": 44,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2254,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:46.377",
+        "Points": -200,
+        "BehaviourId": 50,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2255,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:47.903",
+        "Points": -150,
+        "BehaviourId": 49,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2256,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:50.54",
+        "Points": 150,
+        "BehaviourId": 45,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2257,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:51.87",
+        "Points": 200,
+        "BehaviourId": 46,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2258,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:53.84",
+        "Points": -100,
+        "BehaviourId": 48,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2259,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T12:12:55.203",
+        "Points": -50,
+        "BehaviourId": 47,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2260,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T13:54:15.77",
+        "Points": -100,
+        "BehaviourId": 48,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2261,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T13:54:17.307",
+        "Points": -50,
+        "BehaviourId": 47,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2262,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T13:54:19.28",
+        "Points": 150,
+        "BehaviourId": 45,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2263,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T13:54:20.493",
+        "Points": 100,
+        "BehaviourId": 44,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2264,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-21T13:54:22.897",
+        "Points": -200,
+        "BehaviourId": 50,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2280,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-23T18:53:28.567",
+        "Points": 50,
+        "BehaviourId": 43,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2281,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-23T18:53:30.313",
+        "Points": 50,
+        "BehaviourId": 43,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2282,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-23T18:53:32.017",
+        "Points": -100,
+        "BehaviourId": 48,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2293,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T14:49:28.827",
+        "Points": -50,
+        "BehaviourId": 47,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2294,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T14:49:31.783",
+        "Points": 100,
+        "BehaviourId": 44,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2305,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T17:10:35.02",
+        "Points": -50,
+        "BehaviourId": 47,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2306,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T17:10:35.613",
+        "Points": -50,
+        "BehaviourId": 47,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2307,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T17:10:36.223",
+        "Points": -50,
+        "BehaviourId": 47,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2308,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T17:10:37.433",
+        "Points": -50,
+        "BehaviourId": 47,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2309,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T17:10:38.927",
+        "Points": -100,
+        "BehaviourId": 48,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    },
+    {
+        "PointId": 2310,
+        "ChildId": 2,
+        "AllocationDate": "2017-08-24T17:10:43.683",
+        "Points": -150,
+        "BehaviourId": 49,
+        "Saved": false,
+        "ContributorId": 0,
+        "Approved": true,
+        "Behaviour": null
+    }
+]</value>
+  </data>
+</root>

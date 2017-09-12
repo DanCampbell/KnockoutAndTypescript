@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26228.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnockoutAndTypescript", "KnockoutAndTypescript\KnockoutAndTypescript.csproj", "{7B828C9E-5662-4992-8DBF-7D0BBEC7CDF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KidService1", "KidService1\KidService1.csproj", "{C4E994E0-46DC-476F-A778-D881636C7319}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{7B828C9E-5662-4992-8DBF-7D0BBEC7CDF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B828C9E-5662-4992-8DBF-7D0BBEC7CDF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B828C9E-5662-4992-8DBF-7D0BBEC7CDF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4E994E0-46DC-476F-A778-D881636C7319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E994E0-46DC-476F-A778-D881636C7319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4E994E0-46DC-476F-A778-D881636C7319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4E994E0-46DC-476F-A778-D881636C7319}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

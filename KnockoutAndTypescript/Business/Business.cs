@@ -95,11 +95,12 @@ namespace KnockoutAndTypescript.Business
             }
         }
 
+        //Bank Points
         public void UpdatePointsToSavedStatusForId(Child child)
         {
             using (var db = new ModelKids())
             {
-                var allPoints = db.PointAllocation.Where(a => a.ChildId == child.ChildId && a.Saved != true);
+                var allPoints = db.PointAllocation.Where(a => a.ChildId == child.ChildId && a.Saved != true && a.Approved == true); // tbd only select approved too
                 foreach (var p in allPoints)
                 {
                     p.Saved = true;
