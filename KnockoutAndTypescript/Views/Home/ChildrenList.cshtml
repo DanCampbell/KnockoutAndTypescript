@@ -119,7 +119,8 @@
     <script>
         $(function () {
             var jsModel2 = @Html.Raw(Json.Encode(Model));
-            var listModel = new ChildrenListModel(jsModel2);
+             var jsParent = @Html.Raw(Json.Encode(ViewBag.ParentUser));
+            var listModel = new ChildrenListModel(jsModel2,jsParent);
 
             console.log(jsModel2);
             var viewmodel = { children: ko.mapping.fromJS(@Html.Raw(Json.Encode(Model))) };

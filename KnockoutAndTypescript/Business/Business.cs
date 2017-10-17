@@ -6,7 +6,7 @@ using KnockoutAndTypescript.Models;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Threading.Tasks;
-
+using KnockoutAndTypescript.ViewModels;
 
 namespace KnockoutAndTypescript.Business
 {
@@ -128,6 +128,43 @@ namespace KnockoutAndTypescript.Business
             {
                 var allPoints = db.PointAllocation.Where(a => a.ChildId == id && a.Saved != true).Include(i => i.Behaviour).ToList();
                 return allPoints;
+            }
+        }
+
+        public int GetPointsValueForId(int id)
+        {
+            using (var db = new ModelKids())
+            {
+                var e = db.PointAllocation.Where(a => a.ChildId == id && a.Saved != true && a.Approved == true);
+                var points =e.Sum(a => (int?) a.Points);
+                return points.GetValueOrDefault();
+            }
+        }
+
+        public List<ChildGuageViewModel> GetPointsValueForAll(string parent)
+        {
+            using (var db = new ModelKids())
+            {
+                List<ChildGuageViewModel> guagelist = new List<ChildGuageViewModel>();
+                var allchildren = db.Children.Where(a => a.ParentUser == parent).ToList();
+                foreach (var c in allchildren)
+                {
+                    var e = db.PointAllocation.Where(a => a.ChildId == c.ChildId && a.Saved != true && a.Approved == true);
+                    var points = e.Sum(a => (int?)a.Points);
+                    //var banked = db.PointAllocation.Where(a => a.ChildId == c.ChildId && a.Saved == true && a.Approved == true);
+                    //var banksum = banked.Sum(a => (int?)a.Points);
+                    var allocatedPoints = GetAllChildRewardForId(c.ChildId).Where(a => a.RewardComplete == false).Sum(a => a.PointsAllocated);
+
+                    var cg = new ChildGuageViewModel();
+                    cg.ChildId = c.ChildId;
+                    cg.ChildName = c.ChildName;
+                    cg.GuagePoints = points.GetValueOrDefault();
+                    cg.Image = c.UserImage;
+                    cg.BankedPoints = c.BankedPoints;
+                    cg.AllocatedPoints = allocatedPoints;
+                    guagelist.Add(cg);
+                }
+                return guagelist;
             }
         }
 

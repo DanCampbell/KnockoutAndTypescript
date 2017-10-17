@@ -33,11 +33,13 @@ class ChildrenListModel {
     UserImage: KnockoutObservable<string>;
     SexOptions: KnockoutObservableArray<Selected>;
     SexSelected: KnockoutObservable<boolean>;
+    ParentUser: string;
     Errors: KnockoutValidationErrors;
    
-    constructor(values: Children[]) {
+    constructor(values: Children[], parentuser:string) {
         //var test = ko.mapping.fromJS(values);
         //this.items = ko.mapping.fromJS(values);
+        this.ParentUser = parentuser;
         this.children = ko.observableArray(values);
         this.ChildName = ko.observable("").extend({required:true });
         this.ChildAge = ko.observable(0).extend({required:true});
@@ -67,6 +69,7 @@ class ChildrenListModel {
     }
         
     addItem(root) {
+        debugger;
        // var test1 = this.ChildName().toString();
        // console.log(test1);
         if (root.ChildName() != "") {
@@ -79,10 +82,13 @@ class ChildrenListModel {
             t1.ChildName = root.ChildName().toString();
             t1.ChildSex = <boolean>selected;
             t1.BankedPoints = 0;
+            t1.UserAuthCode = "";
             t1.UserImage = "/Content/usernotset.png";
+            t1.ParentUser = root.ParentUser;
            // console.log(t1);
-            root.children.push(t1);
             root.saveItems(t1, root);
+           // root.children.push(t1);
+            
             root.testFunction();
         }
         else {
@@ -93,7 +99,7 @@ class ChildrenListModel {
 
     saveItems(data, root) {
         let curChild = <Children>data;
-        
+        debugger;
        
         var promise =
             $.ajax({
@@ -106,13 +112,16 @@ class ChildrenListModel {
                     
                     let child: Children = <Children>result;
                     console.log(root);
-                    let match: Children = ko.utils.arrayFirst(root.children(), (item: Children) =>  {
-                        return data.ChildId === item.ChildId;
-                    });
+                    //let match: Children = ko.utils.arrayFirst(root.children(), (item: Children) =>  {
+                    //    return data.ChildId === item.ChildId;
+                    //});
                     
-                    match.ChildId = child.ChildId;
-                    match.CanBank = child.CanBank;
-                    match.ParentUser = child.ParentUser;
+                    //match.ChildId = child.ChildId;
+                    //match.CanBank = child.CanBank;
+                    //match.ParentUser = child.ParentUser;
+                    //match.UserAuthCode = child.UserAuthCode;
+                    root.children.push(child);
+                    root.children.valueHasMutated();
                    
                 },
             });

@@ -52,7 +52,7 @@ namespace KidService1.Controllers
         {
             using (var db = new ModelKids())
             {
-                var allPoints = db.PointAllocation.Where(a => a.ChildId == id && a.Approved == true && a.Saved == false).ToList();
+                var allPoints = db.PointAllocation.Where(a => a.ChildId == id && a.Approved == true && a.Saved == false).ToList().OrderByDescending(a => a.AllocationDate);
                 return Ok(allPoints);
 
             }

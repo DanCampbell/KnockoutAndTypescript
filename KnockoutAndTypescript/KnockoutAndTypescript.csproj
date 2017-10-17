@@ -313,6 +313,10 @@
     <Compile Include="Migrations\201708041357050_approval.Designer.cs">
       <DependentUpon>201708041357050_approval.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710161009123_BehaviourPreset.cs" />
+    <Compile Include="Migrations\201710161009123_BehaviourPreset.Designer.cs">
+      <DependentUpon>201710161009123_BehaviourPreset.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelKids.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -332,6 +336,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AllChildrenGraphViewModel.cs" />
+    <Compile Include="ViewModels\DailySummary.cs" />
     <Compile Include="ViewModels\ChildDetailsViewModel.cs" />
     <Compile Include="ViewModels\ChildGraphViewModel.cs" />
     <Compile Include="ViewModels\GraphCollectionViewModel.cs" />
@@ -358,6 +363,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="package.json" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\Chart.min.js" />
@@ -389,6 +395,7 @@
     <Content Include="Scripts\require.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Views\Home\Test1.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -445,6 +452,9 @@
     <Content Include="Views\Home\PointsTicker.cshtml" />
     <Content Include="Views\Home\GraphTest.cshtml" />
     <Content Include="Views\Home\Statistics.cshtml" />
+    <Content Include="Views\Home\GuageTest.cshtml" />
+    <Content Include="Views\Home\GaugeBehaviour.cshtml" />
+    <Content Include="Views\Home\GaugeBehaviourAll.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -577,6 +587,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708041357050_approval.resx">
       <DependentUpon>201708041357050_approval.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710161009123_BehaviourPreset.resx">
+      <DependentUpon>201710161009123_BehaviourPreset.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

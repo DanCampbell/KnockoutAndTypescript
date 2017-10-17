@@ -23,6 +23,17 @@ namespace KnockoutAndTypescript.ViewModels
         public string UserImage { get; set; }
     }
 
+    public class ChildGuageViewModel
+    {
+        public int ChildId { get; set; }
+        public string ChildName { get; set; }
+        public int GuagePoints { get; set; }
+        public string Image { get; set; }
+        public int BankedPoints { get; set; }
+        public int AllocatedPoints { get; set; }
+
+    }
+
     public class BehaviourViewModel
     {
         public int BehaviourId { get; set; }

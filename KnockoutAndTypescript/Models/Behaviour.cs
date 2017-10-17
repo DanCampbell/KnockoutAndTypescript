@@ -13,6 +13,7 @@ namespace KnockoutAndTypescript.Models
         public string BehaviourName { get; set; }
         public int BehaviourPoints { get; set; }
         public string ParentUser { get; set; }
+        public bool Preset { get; set; }
 
         public ICollection<PointAllocation> Points { get; set; }
         //public virtual PointAllocation Points { get; set; }

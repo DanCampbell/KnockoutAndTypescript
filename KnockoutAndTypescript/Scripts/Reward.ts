@@ -200,7 +200,7 @@ class RewardsModel {
         // //   val.GoalPointsOriginal = val.GoalCompletePoints;
         //    val.SliderVisible = false;
         //}
-        console.log(this.RewardsAry);
+       // console.log(this.RewardsAry);
 
      //   if (val.WantReward == false) {
             if (val.GoalPoints > val.GoalPointsOriginal) {
@@ -214,7 +214,7 @@ class RewardsModel {
             if (val.GoalPoints < val.GoalPointsOriginal) {
 
                 difference = val.GoalPointsOriginal - val.GoalPoints;
-                console.log(difference);
+              //  console.log(difference);
                 bankpoints = bankpoints + difference;
                 if (bankpoints < 0) { val.GoalPoints = val.GoalPointsOriginal } else {
                     this.BankedPoints(bankpoints);

@@ -49,6 +49,30 @@ namespace KnockoutAndTypescript.Controllers
         {
             return View();
         }
+        public ActionResult GuageTest()
+        {
+            return View();
+        }
+
+        public ActionResult GaugeBehaviour(int id =1)
+        {
+            var points = BL.GetPointsValueForId(id);
+            ViewBag.points = points;
+            ViewBag.rangestart = -200;
+            ViewBag.rangeend = 200;
+            return View();
+        }
+
+        [System.Web.Mvc.Authorize]
+        public ActionResult GaugeBehaviourAll()
+        {
+            string current_user = User.Identity.Name;
+            var model = BL.GetPointsValueForAll(current_user);
+           // ViewBag.points = points;
+            ViewBag.rangestart = -200;
+            ViewBag.rangeend = 200;
+            return View(model);
+        }
 
         public ActionResult PointsTicker()
         {
@@ -528,7 +552,9 @@ namespace KnockoutAndTypescript.Controllers
             string uri = Request.Url.AbsoluteUri;
             var idx = uri.Replace("ChildrenList", "ChildDetail");
             ViewBag.ChildDetailUri = idx;
+            
             string current_user = User.Identity.Name;
+            ViewBag.ParentUser = current_user;
             var model = BL.GetChildren().Where( a=> a.ParentUser == current_user).ToList();
             return View(model);
         }
@@ -899,8 +925,8 @@ namespace KnockoutAndTypescript.Controllers
             string current_user = User.Identity.Name;
             child.ParentUser = current_user;
             child.UserImage = "/Content/usernotset.png";
-            BL.AddChild(child);
-            return Json(child,JsonRequestBehavior.AllowGet);
+            var addedchild = BL.AddChild(child);
+            return Json(addedchild,JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -911,6 +937,33 @@ namespace KnockoutAndTypescript.Controllers
             contributor.ContributorImage = "/Content/usernotset.png";
             BL.AddContributor(contributor);
             return Json(contributor, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public int AddPointQuick(int id, int points)
+        {
+            var child = BL.GetChildForId(id);
+            var point = new PointAllocation();
+            point.ChildId = child.ChildId;
+            point.Approved = true;
+            //point.Saved = true;
+            DateTime curtime = DateTime.Now;
+            point.AllocationDate = curtime;
+            string contributorStr = child.ParentUser;
+            var presetpoint = BL.GetBehaviours().Where(a => a.ParentUser == child.ParentUser && a.Preset == true && a.BehaviourPoints == points).FirstOrDefault();
+            point.BehaviourId = presetpoint.BehaviourId;
+            point.Points = presetpoint.BehaviourPoints;
+
+            if (point.ContributorId > 0)
+            {
+                var contributor = BL.GetContributorForId(point.ContributorId);
+                contributorStr = contributor.ContributorName;
+
+            }
+            // lookup appropriate range value
+            BL.AddPoint(point);
+            var newpoints = BL.GetPointsValueForId(id);
+            return newpoints;
         }
 
         [HttpPost]

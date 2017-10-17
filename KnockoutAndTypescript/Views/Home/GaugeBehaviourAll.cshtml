@@ -1,0 +1,321 @@
+﻿@model List<KnockoutAndTypescript.ViewModels.ChildGuageViewModel>
+@{
+    ViewBag.Title = "GaugeBehaviourAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+</style>
+@*<h2>GaugeBehaviourAll</h2>*@
+<p></p>
+<div class="container-fluid">
+    @*<div class="row">*@
+        @if (Model != null)
+        {
+
+            foreach (var item in Model)
+            {
+
+                string fName = "canvas" + item.ChildId;
+                string sName = "slider" + item.ChildId;
+                string bName = "btn" + item.ChildId;
+                string lName = "lbl" + item.ChildId;
+                string l2Name = "lbla" + item.ChildId;
+
+                @*<div class="container-fluid">*@
+                <div class="row">
+                    <div class="col-xs-3">
+                        @*<li>*@
+                        @*@Html.DisplayFor(modelItem => item.ChildName)
+            @Html.DisplayFor(modelItem => item.GuagePoints)*@
+                        <img src="@item.Image" class="img-circle" alt="Smiley face" height="200" width="200">
+                    </div>
+                    <div class="col-xs-3 text-center">
+                        <br />
+                        <label id="@lName" class="text-center"></label> <p></p>
+                        <input type="range" min="-250" max="250" value="0" step="50" class="slider" id="@sName"> <p></p>
+                        <p></p>
+                        <button type="button" class="btn btn-primary pointsBtn" id="@bName">Update Points</button>
+                        
+                    </div>
+                    <div class="col-xs-3">
+                   <canvas id="@fName" width="210" data-type="radial-gauge"
+                                                data-width="200"
+                                                data-height="200"
+                                                data-units="Points"
+                                                data-title="Behaviour"
+                                                data-min-value="-50"
+                                                data-max-value="50"
+                                                data-value="35"
+                                                data-major-ticks="[-50,-40,-30,-20,-10,0,10,20,30,40,50]"
+                                                data-minor-ticks="2"
+                                                data-stroke-ticks="true"
+                                                data-highlights='[ {"from": -50, "to": 0, "color": "rgba(255,0, 0, .3)"},
+                        {"from": 0, "to": 50, "color": "rgba(0, 255, 0, .3)"} ]'
+                                                data-ticks-angle="225"
+                                                data-start-angle="67.5"
+                                                data-color-major-ticks="#ddd"
+                                                data-color-minor-ticks="#ddd"
+                                                data-color-title="#eee"
+                                                data-color-units="#ccc"
+                                                data-color-numbers="#eee"
+                                                data-color-plate="#222"
+                                                data-border-shadow-width="0"
+                                                data-borders="true"
+                                                data-needle-type="arrow"
+                                                data-needle-width="2"
+                                                data-needle-circle-size="7"
+                                                data-needle-circle-outer="true"
+                                                data-needle-circle-inner="false"
+                                                data-animation-duration="1500"
+                                                data-animation-rule="linear"
+                                                data-color-border-outer="#333"
+                                                data-color-border-outer-end="#111"
+                                                data-color-border-middle="#222"
+                                                data-color-border-middle-end="#111"
+                                                data-color-border-inner="#111"
+                                                data-color-border-inner-end="#333"
+                                                data-color-needle-shadow-down="#333"
+                                                data-color-needle-circle-outer="#333"
+                                                data-color-needle-circle-outer-end="#111"
+                                                data-color-needle-circle-inner="#111"
+                                                data-color-needle-circle-inner-end="#222"
+                                                data-value-box-border-radius="0"
+                                                data-color-value-box-rect="#222"
+                                                data-color-value-box-rect-end="#333"></canvas>
+                    @*</div>*@
+                    
+                       
+                        @*</li>*@
+                    </div>
+                    <div class="col-xs-3 h3">
+                        <br />
+                        <span class="label label-primary">
+                            Total Points:
+                            <label id="@l2Name">@item.GuagePoints</label>
+                        </span><br />
+                        <span class="label label-warning">
+                            Banked:
+                            <label>@item.BankedPoints</label>
+                        </span><br />
+                        <span class="label label-success">
+                            Allocated:
+                            <label>@item.AllocatedPoints</label>
+                        </span><br />
+
+                    </div>
+                </div>
+
+            }
+        }
+    </div>
+@*</div>*@
+
+
+
+        @*@section scripts {*@
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        @*<script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+
+            <script src="~/Scripts/Chart.js"></script>
+            <script src="~/signalr/hubs"></script>*@
+        <script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.4/radial/gauge.min.js"></script>
+@*<script>
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+    }
+</script>*@
+        <script>
+    $(function () {
+        //If not HTML5 Support the Exit
+        var modelval = @Html.Raw(Json.Encode(Model));
+      //  debugger;
+        for (var i of modelval){
+            setGuage("canvas" + i.ChildId, i.GuagePoints, i.ChildName);
+        }
+
+            });
+
+            $('.pointsBtn').click(function PointsBtn(e) {
+               // console.log(e); 
+                var sender = e.currentTarget.id;
+                var idval = sender.slice(3);
+                var lval = "lbl" + idval;
+                var lval2 = "lbla" + idval;
+                var rval = $('#slider' + idval).val();
+              //  console.log(idval);
+                
+                var canvasval = "canvas" + idval;
+                var test = $(canvasval);
+                var gauge = document.gauges.get(canvasval);
+                var newval = Number(rval) + gauge.value;
+                //console.log(gauge.value);
+               // console.log(newval);
+               // gauge.value =newval;
+                $('#slider' + idval).val(0);
+                $('#' + lval).text(0);
+                postPoints(idval, rval, gauge);
+                $('#' + lval2).text(newval);
+            });
+
+
+
+            $('.slider').on('change', function (e) {
+                var sender = e.currentTarget.id;
+                var idval = sender.slice(6);
+               // console.log(idval);
+                var lval = "lbl" + idval;
+                var rval = $('#slider' + idval).val();
+                //  console.log(idval);
+                $('#' + lval).text(rval);
+            });
+
+            function postPoints(id,points,gauge) {
+                $.ajax({
+
+                    url: "/home/AddPointQuick",
+                    dataType: 'json',
+                    data: {
+                        id: id,
+                        points: points
+                    },
+                    type: "POST",
+                    cache: false,
+                    success: function (data) {
+                        //want to return data as not boolean but string here
+                        console.log(data);
+                        gauge.value = data; // set the Gauge value from return, incase it has a new value from other sources
+                    },
+                    error: function (a, b, c) {
+                        alert("Error")
+                    }
+                });
+            }
+
+    function setGuage(canvasid, points,name) {
+
+        var gauge = new RadialGauge({
+            renderTo: canvasid,
+         //       renderTo: '{canvas1}',
+        width: 200,
+        height: 200,
+        units: "Points",
+        //title: "Behaviour",
+        title:name,
+        minValue: -250,
+        maxValue: 250,
+        value: 65,
+        majorTicks: [
+            -250,
+            -200,
+            -150,
+            -100,
+            -50,
+            0,
+            50,
+            100,
+            150,
+            200,
+            250
+        ],
+        minorTicks: 2,
+        strokeTicks: true,
+        highlights: [
+            {
+                "from": -250,
+                "to": 125,
+                "color": "rgba(255,0, 0, .3)"
+            },
+            {
+                "from": -125,
+                "to": 0,
+                "color": "rgba(255,153, 0, .3)"
+            },
+            {
+                "from": 0,
+                "to": 125,
+                "color": "rgba(0, 175, 0, .3)"
+            },
+            {
+                "from":125,
+                "to": 250,
+                "color": "rgba(0, 255, 0, .3)"
+            },
+
+        ],
+        ticksAngle: 225,
+        startAngle: 67.5,
+        colorMajorTicks: "#ddd",
+        colorMinorTicks: "#ddd",
+        colorTitle: "#eee",
+        colorUnits: "#ccc",
+        colorNumbers: "#eee",
+        colorPlate: "#222",
+        borderShadowWidth: 0,
+        borders: true,
+        needleType: "arrow",
+        needleWidth: 2,
+        needleCircleSize: 7,
+        needleCircleOuter: true,
+        needleCircleInner: false,
+        animationDuration: 1500,
+        animationRule: "linear",
+        colorBorderOuter: "#333",
+        colorBorderOuterEnd: "#111",
+        colorBorderMiddle: "#222",
+        colorBorderMiddleEnd: "#111",
+        colorBorderInner: "#111",
+        colorBorderInnerEnd: "#333",
+        colorNeedleShadowDown: "#333",
+        colorNeedleCircleOuter: "#333",
+        colorNeedleCircleOuterEnd: "#111",
+        colorNeedleCircleInner: "#111",
+        colorNeedleCircleInnerEnd: "#222",
+        valueBoxBorderRadius: 0,
+        colorValueBoxRect: "#222",
+        colorValueBoxRectEnd: "#333"
+        }).draw();
+        gauge.value = points;
+
+    }
+
+        </script>
+
+        @*}*@

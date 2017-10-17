@@ -13,9 +13,10 @@ var Selected = (function () {
     return Selected;
 }());
 var ChildrenListModel = (function () {
-    function ChildrenListModel(values) {
+    function ChildrenListModel(values, parentuser) {
         //var test = ko.mapping.fromJS(values);
         //this.items = ko.mapping.fromJS(values);
+        this.ParentUser = parentuser;
         this.children = ko.observableArray(values);
         this.ChildName = ko.observable("").extend({ required: true });
         this.ChildAge = ko.observable(0).extend({ required: true });
@@ -42,6 +43,7 @@ var ChildrenListModel = (function () {
         window.location.href = urlstring;
     };
     ChildrenListModel.prototype.addItem = function (root) {
+        debugger;
         // var test1 = this.ChildName().toString();
         // console.log(test1);
         if (root.ChildName() != "") {
@@ -54,10 +56,12 @@ var ChildrenListModel = (function () {
             t1.ChildName = root.ChildName().toString();
             t1.ChildSex = selected;
             t1.BankedPoints = 0;
+            t1.UserAuthCode = "";
             t1.UserImage = "/Content/usernotset.png";
+            t1.ParentUser = root.ParentUser;
             // console.log(t1);
-            root.children.push(t1);
             root.saveItems(t1, root);
+            // root.children.push(t1);
             root.testFunction();
         }
         else {
@@ -67,6 +71,7 @@ var ChildrenListModel = (function () {
     };
     ChildrenListModel.prototype.saveItems = function (data, root) {
         var curChild = data;
+        debugger;
         var promise = $.ajax({
             url: "/Home/AddChild/",
             cache: false,
@@ -76,12 +81,15 @@ var ChildrenListModel = (function () {
             success: function (result) {
                 var child = result;
                 console.log(root);
-                var match = ko.utils.arrayFirst(root.children(), function (item) {
-                    return data.ChildId === item.ChildId;
-                });
-                match.ChildId = child.ChildId;
-                match.CanBank = child.CanBank;
-                match.ParentUser = child.ParentUser;
+                //let match: Children = ko.utils.arrayFirst(root.children(), (item: Children) =>  {
+                //    return data.ChildId === item.ChildId;
+                //});
+                //match.ChildId = child.ChildId;
+                //match.CanBank = child.CanBank;
+                //match.ParentUser = child.ParentUser;
+                //match.UserAuthCode = child.UserAuthCode;
+                root.children.push(child);
+                root.children.valueHasMutated();
             },
         });
         promise.done(function (res) {
