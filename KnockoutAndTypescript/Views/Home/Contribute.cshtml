@@ -130,100 +130,120 @@
                     <div class="panel-heading">Select Good</div>
                     @*<div class="panel-body"></div>*@
                         <ul class="list-group" data-bind="foreach:goodBehaviour" style="cursor: pointer;">
-                            <li class="list-group-item"><span data-bind="text:BehaviourName, click:$parent.listItemSelected "></span><span class="badge" data-bind="text:BehaviourPoints"></span></li>
+                            <li class="list-group-item"><span data-bind="text:BehaviourName, click:$parent.listItemSelected ">
+                                 </span><span class="badge" data-bind="text:BehaviourPoints"></span></li>
                         </ul>
                     </div>
                
                 </div>
-                <div class="col-md-6">
-                    @*<div style="float:left;width:20%" >*@
-                    <div class="row">
-                        <div style="float:left">
-                            <h3 class="text-center">
-                                <span class="label label-primary">Good Behaviour</span>
-                            </h3>
-                            <img src="~/Content/goodboy.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:204px;height:240px;">
-                            <h2 data-bind="text:GoodPointsNum" class="text-center"></h2>
-                        </div>
-                        <div data-bind="if:ChildSelectedBool" style="float:left">                           
-                                <p>&nbsp;</p>                                
-                                    <img class="img-rounded" width="140" height="140" data-bind="attr:{src: SelectedChild().UserImage}" style="margin:0px 5px"/>
-                        </div>
-                        <div style="float:left">
-                            @*<div style="float:left;width:20%">*@
-                            <h3 class="text-center">
-                                <span class="label label-primary">Naughty Behaviour</span>
-                            </h3>
-                            <img src="~/Content/naughty-boy.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:204px;height:240px;">
-                            <h2 data-bind="text:BadPointsNum" class="text-center ">                                
-                            </h2>
-                        </div>
+            <div class="col-md-6">
+                @*<div style="float:left;width:20%" >*@
+                <div class="row">
+                    <div style="float:left">
+                        <h3 class="text-center">
+                            <span class="label label-primary">Good Behaviour</span>
+                        </h3>
+                        <img src="~/Content/goodboy.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:204px;height:240px;">
+                        <h2 data-bind="text:GoodPointsNum" class="text-center"></h2>
+                    </div>
+                    <div data-bind="if:ChildSelectedBool" style="float:left">
+                        <p>&nbsp;</p>
+                        <img class="img-rounded" width="140" height="140" data-bind="attr:{src: SelectedChild().UserImage}" style="margin:0px 5px" />
+                    </div>
+                    <div style="float:left">
+                        @*<div style="float:left;width:20%">*@
+                        <h3 class="text-center">
+                            <span class="label label-primary">Naughty Behaviour</span>
+                        </h3>
+                        <img src="~/Content/naughty-boy.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:204px;height:240px;">
+                        <h2 data-bind="text:BadPointsNum" class="text-center "></h2>
                     </div>
                     <div class="row">
-                        <div style="float:left">
-                            <h4 class="text-center">
-                                <span class="label label-primary">Review:</span>
-                            </h4>
-                            <div data-bind="if:NothingSelectedBool">
-                                <img src="~/Content/review.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
-                                @*<h2 data-bind="text:BankedPointsNum" class="text-center"></h2>*@
-                            </div>
-                            <div data-bind="if:ChildSelectedBool">
-                                <a data-bind="attr: { 'href': '@Url.Action("ReviewPoints", "Home")' + '/' + SelectedChild().ChildId }">
-                                    <img src="~/Content/review.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
-                                </a>
-                            </div>
+                        <div class="col-md-12"style="float:left">
+                            <ul class="list-group" data-bind="foreach:ContributePoints">
+                                <li class="list-group-item">
+                                    <span data-bind="text:AllocationDate"></span>&nbsp;
+                                    <span data-bind="text:ChildName"></span>&nbsp;
+                                    <span data-bind="text:BehaviourName"></span>
+                                    <span data-bind="if: BehaviourPoints > 0">
+                                        <label class="badge badge-success" data-bind="text:BehaviourPoints "></label>
+                                    </span>
+                                    <span data-bind="if: BehaviourPoints < 0">
+                                        <label class="badge badge-warning" data-bind="text:BehaviourPoints "></label>
+                                    </span>
+                                    <span data-bind="if: Approved">
+                                        <label class="badge badge-warning">Approved</label>
+                                    </span>
+                                </li>
+                            </ul>
                         </div>
-                        <div style="float:left">
-                            <h4 class="text-center">
-                                <span class="label label-primary">Banked Points:</span>
-                            </h4>
-                            <img src="~/Content/piggy-bank.png" class="img-responsive img-rounded" data-bind="click:BankPointsClick" alt="Cinque Terre" style="width:140px;height:150px;">
-                            <h2 data-bind="text:BankedPointsNum" class="text-center"></h2>
-                        </div>
-                        <div style="float:left">
-                            <h4 class="text-center">
-                                <span class="label label-primary">Allocate Points:</span>
-                            </h4>
-                                <div data-bind="if:NothingSelectedBool">
-                                    <img src="~/Content/abacus.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
-                                    @*<h2 data-bind="text:BankedPointsNum" class="text-center"></h2>*@
-                                </div>
-                                <div data-bind="if:ChildSelectedBool">
-                                    <a data-bind="attr: { 'href': '@Url.Action("RewardAcceptance", "Home")' + '/' + SelectedChild().ChildId }">
-                                        <img src="~/Content/abacus.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
-                                    </a>
-                                </div>
-</div>
-                        <div style="float:left">
-                            @*<div style="float:left;width:20%">*@
-                            <h4 class="text-center">
-                                <span class="label label-primary">Rewards:</span>
-                                </h4>
-                                <div data-bind="if:ChildSelectedBool">
-                                    <a data-bind="attr: { 'href': '@Url.Action("RewardHistory", "Home")' + '/' + SelectedChild().ChildId }">
-                                        <img src="~/Content/reward.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
-                                    </a>
-                                </div>
-                                <div data-bind="if:NothingSelectedBool">
-                                    <img src="~/Content/reward.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
-                                </div>
-                                @*<h2 data-bind="text:BadPointsNum" class="text-center"></h2>*@
-</div>
-                        
-                        </div>
+                    </div>
                 </div>
+                <div class="row" data-bind="if:DisplayAdmin">
+                    <div style="float:left">
+                        <h4 class="text-center">
+                            <span class="label label-primary">Review:</span>
+                        </h4>
+                        <div data-bind="if:NothingSelectedBool">
+                            <img src="~/Content/review.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                            @*<h2 data-bind="text:BankedPointsNum" class="text-center"></h2>*@
+                        </div>
+                        <div data-bind="if:ChildSelectedBool">
+                            <a data-bind="attr: { 'href': '@Url.Action("ReviewPoints", "Home")' + '/' + SelectedChild().ChildId }">
+                                <img src="~/Content/review.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                            </a>
+                        </div>
+                    </div>
+                    <div style="float:left">
+                        <h4 class="text-center">
+                            <span class="label label-primary">Banked Points:</span>
+                        </h4>
+                        <img src="~/Content/piggy-bank.png" class="img-responsive img-rounded" data-bind="click:BankPointsClick" alt="Cinque Terre" style="width:140px;height:150px;">
+                        <h2 data-bind="text:BankedPointsNum" class="text-center"></h2>
+                    </div>
+                    <div style="float:left">
+                        <h4 class="text-center">
+                            <span class="label label-primary">Allocate Points:</span>
+                        </h4>
+                        <div data-bind="if:NothingSelectedBool">
+                            <img src="~/Content/abacus.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                            @*<h2 data-bind="text:BankedPointsNum" class="text-center"></h2>*@
+                        </div>
+                        <div data-bind="if:ChildSelectedBool">
+                            <a data-bind="attr: { 'href': '@Url.Action("RewardAcceptance", "Home")' + '/' + SelectedChild().ChildId }">
+                                <img src="~/Content/abacus.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                            </a>
+                        </div>
+                    </div>
+                    <div style="float:left">
+                        @*<div style="float:left;width:20%">*@
+                        <h4 class="text-center">
+                            <span class="label label-primary">Rewards:</span>
+                        </h4>
+                        <div data-bind="if:ChildSelectedBool">
+                            <a data-bind="attr: { 'href': '@Url.Action("RewardHistory", "Home")' + '/' + SelectedChild().ChildId }">
+                                <img src="~/Content/reward.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                            </a>
+                        </div>
+                        <div data-bind="if:NothingSelectedBool">
+                            <img src="~/Content/reward.jpg" class="img-responsive img-rounded" alt="Cinque Terre" style="width:140px;height:150px;">
+                        </div>
+                        @*<h2 data-bind="text:BadPointsNum" class="text-center"></h2>*@
+                    </div>
 
-                <div class="col-md-3" style="float:left">
-                    <div class="panel panel-default tab-pane">
-                        <!-- Default panel contents -->
-                        <div class="panel-heading">Select Naughty</div>
-                        <ul class="list-group" data-bind="foreach:naughtyBehaviour" style="cursor: pointer;">
-                            <li class="list-group-item"><span data-bind="text:BehaviourName, click:$parent.listItemSelected"></span><span class="badge" data-bind="text:BehaviourPoints"></span></li>
-                        </ul>
-                    </div>
-                    </div>
+                </div>
+               
+
+                   
+                </div>
+            <div class="col-md-3" style="float:left">
+                <div class="panel panel-default tab-pane">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Select Naughty</div>
+                    <ul class="list-group" data-bind="foreach:naughtyBehaviour" style="cursor: pointer;">
+                        <li class="list-group-item"><span data-bind="text:BehaviourName, click:$parent.listItemSelected"></span><span class="badge" data-bind="text:BehaviourPoints"></span></li>
+                    </ul>
+                </div>
             </div>
-   
-    </div>
+            </div>
 

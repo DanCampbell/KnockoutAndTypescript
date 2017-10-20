@@ -46,6 +46,7 @@
         @if (Model != null)
         {
 
+
             foreach (var item in Model)
             {
 
@@ -54,6 +55,7 @@
                 string bName = "btn" + item.ChildId;
                 string lName = "lbl" + item.ChildId;
                 string l2Name = "lbla" + item.ChildId;
+                string pointsuri = ViewBag.PointsUri + item.ChildId;
 
                 @*<div class="container-fluid">*@
                 <div class="row">
@@ -61,7 +63,9 @@
                         @*<li>*@
                         @*@Html.DisplayFor(modelItem => item.ChildName)
             @Html.DisplayFor(modelItem => item.GuagePoints)*@
-                        <img src="@item.Image" class="img-circle" alt="Smiley face" height="200" width="200">
+                        <a href="@pointsuri">
+                            <img src="@item.Image" class="img-circle" alt="Smiley face" height="200" width="200">
+                        </a>
                     </div>
                     <div class="col-xs-3 text-center">
                         <br />
@@ -124,7 +128,7 @@
                     <div class="col-xs-3 h3">
                         <br />
                         <span class="label label-primary">
-                            Total Points:
+                            Points:
                             <label id="@l2Name">@item.GuagePoints</label>
                         </span><br />
                         <span class="label label-warning">
@@ -134,6 +138,10 @@
                         <span class="label label-success">
                             Allocated:
                             <label>@item.AllocatedPoints</label>
+                        </span><br />
+                        <span class="label label-info">
+                            UnReviewed:
+                            <label id="@l2Name">@item.NotReviewedPoints</label>
                         </span><br />
 
                     </div>
@@ -147,7 +155,7 @@
 
 
         @*@section scripts {*@
-        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/jquery-1.12.4.min.js"></script>
         @*<script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
 
             <script src="~/Scripts/Chart.js"></script>
@@ -163,9 +171,9 @@
     }
 </script>*@
         <script>
-    $(function () {
-        //If not HTML5 Support the Exit
-        var modelval = @Html.Raw(Json.Encode(Model));
+            $(function () {
+                //If not HTML5 Support the Exit
+                var modelval = @Html.Raw(Json.Encode(Model));
       //  debugger;
         for (var i of modelval){
             setGuage("canvas" + i.ChildId, i.GuagePoints, i.ChildName);
@@ -174,14 +182,14 @@
             });
 
             $('.pointsBtn').click(function PointsBtn(e) {
-               // console.log(e); 
+               // console.log(e);
                 var sender = e.currentTarget.id;
                 var idval = sender.slice(3);
                 var lval = "lbl" + idval;
                 var lval2 = "lbla" + idval;
                 var rval = $('#slider' + idval).val();
               //  console.log(idval);
-                
+
                 var canvasval = "canvas" + idval;
                 var test = $(canvasval);
                 var gauge = document.gauges.get(canvasval);
@@ -190,7 +198,7 @@
                // console.log(newval);
                // gauge.value =newval;
                 $('#slider' + idval).val(0);
-                $('#' + lval).text(0);
+                $('#' + lval).text("");
                 postPoints(idval, rval, gauge);
                 $('#' + lval2).text(newval);
             });
@@ -198,14 +206,37 @@
 
 
             $('.slider').on('change', function (e) {
+                
                 var sender = e.currentTarget.id;
                 var idval = sender.slice(6);
                // console.log(idval);
                 var lval = "lbl" + idval;
                 var rval = $('#slider' + idval).val();
+                var lookupval = getByKey(rval);
                 //  console.log(idval);
-                $('#' + lval).text(rval);
+                if (rval != 0)
+                {
+                    $('#' + lval).text(rval + " : " + lookupval.BehaviourName);
+                }
+                else {
+                    $('#' + lval).text("");
+                }
             });
+
+            function getByKey(key) {
+                var data = @Html.Raw(Json.Encode(ViewBag.descriptions));
+                var found = null;
+
+                for (var i = 0; i < data.length; i++) {
+                    var element = data[i];
+
+                    if (element.BehaviourPoints == key) {
+                        found = element;
+                    }
+                }
+
+                return found;
+            }
 
             function postPoints(id,points,gauge) {
                 $.ajax({

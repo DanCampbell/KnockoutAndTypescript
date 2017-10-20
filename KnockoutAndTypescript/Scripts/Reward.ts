@@ -186,6 +186,101 @@ class RewardsModel {
         // return false;
     }
 
+    MaxPointsToGoal(root: RewardsModel, index: number, val: ChildRewardsVM) {
+        console.log(val.GoalPoints);
+        var bankpoints = root.BankedPoints();
+        let difference: number = 0;
+        let bankadjust: number = 0;
+
+        if (val.GoalPoints < val.GoalCompletePoints)
+        {
+            let diftocomplete = val.GoalCompletePoints - val.GoalPoints;
+            if (bankpoints > diftocomplete)
+            {
+                bankadjust = bankpoints - diftocomplete;
+                val.GoalPoints = val.GoalCompletePoints;
+            } else
+            {
+                bankadjust = 0;
+                let newbalance = val.GoalPoints + bankpoints;
+                val.GoalPoints = newbalance;
+            }
+          //  root.BankedPoints(bankadjust);
+        }
+
+            //val.GoalPoints = 0;
+            //val.SliderVisible = true;
+            //val.GoalPointsOriginal = 0;
+            //var newbankpoints = bankpoints + val.GoalPoints;
+            //root.BankedPoints(newbankpoints);
+       
+
+        if (val.GoalPoints > val.GoalPointsOriginal) {
+            difference = val.GoalPoints - val.GoalPointsOriginal;
+            bankpoints = bankpoints - difference;
+            if (bankpoints < 0) { val.GoalPoints = val.GoalPointsOriginal } else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+        if (val.GoalPoints < val.GoalPointsOriginal) {
+
+            difference = val.GoalPointsOriginal - val.GoalPoints;
+            //  console.log(difference);
+            bankpoints = bankpoints + difference;
+            if (bankpoints < 0) { val.GoalPoints = val.GoalPointsOriginal } else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+
+        var changedIdx = root.RewardsAry.indexOf(val);
+        root.RewardsAry.splice(changedIdx, 1); // removes the item from the array
+        root.RewardsAry.splice(changedIdx, 0, val); // adds it back
+
+        root.RewardsAry.valueHasMutated();
+        root.AwardedAry.notifySubscribers();
+    }
+
+    PutPointsBack(root: RewardsModel, index: number, val: ChildRewardsVM  ){
+        console.log(val.GoalPoints);
+        var bankpoints = root.BankedPoints();
+        let difference: number = 0;
+        if (val.GoalPoints > 0) {
+            val.GoalPoints = 0;
+            val.SliderVisible = true;
+            //val.GoalPointsOriginal = 0;
+            //var newbankpoints = bankpoints + val.GoalPoints;
+            //root.BankedPoints(newbankpoints);
+        }
+
+        if (val.GoalPoints > val.GoalPointsOriginal) {
+            difference = val.GoalPoints - val.GoalPointsOriginal;
+            bankpoints = bankpoints - difference;
+            if (bankpoints < 0) { val.GoalPoints = val.GoalPointsOriginal } else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+        if (val.GoalPoints < val.GoalPointsOriginal) {
+
+            difference = val.GoalPointsOriginal - val.GoalPoints;
+            //  console.log(difference);
+            bankpoints = bankpoints + difference;
+            if (bankpoints < 0) { val.GoalPoints = val.GoalPointsOriginal } else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+
+        var changedIdx = root.RewardsAry.indexOf(val);
+        root.RewardsAry.splice(changedIdx, 1); // removes the item from the array
+        root.RewardsAry.splice(changedIdx, 0, val); // adds it back
+
+        root.RewardsAry.valueHasMutated();
+        root.AwardedAry.notifySubscribers();
+    }
+
     ChangeSlider(val: ChildRewardsVM)
     {
         //if (val.GoalPoints > 75) {

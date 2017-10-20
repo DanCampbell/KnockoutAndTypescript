@@ -71,6 +71,13 @@ namespace KnockoutAndTypescript.Controllers
            // ViewBag.points = points;
             ViewBag.rangestart = -200;
             ViewBag.rangeend = 200;
+            string uri = Request.Url.AbsoluteUri;
+            var idx = uri.Replace("Gaugebehaviourall", "Points/");
+            ViewBag.PointsUri = idx;
+
+            var presets = BL.GetBehaviours().Where(a => a.Preset == true).OrderBy(a => a.BehaviourPoints).Select( a => new { a.BehaviourPoints , a.BehaviourName }).ToArray();
+            ViewBag.descriptions = presets;
+
             return View(model);
         }
 
@@ -502,14 +509,18 @@ namespace KnockoutAndTypescript.Controllers
         public ActionResult Points(int id=-1)
         {
             ViewBag.Message = "Points page.";
+            string current_user = User.Identity.Name;
+            string uri = Request.Url.AbsoluteUri;
             //  var test1 = BL.GetPoints2ForId(1);
             //  var test2 = Json(test1);
             ViewBag.UserSelected = id;
+            ViewBag.Contributor = "-1";
             Response.CacheControl = "no-cache";
             return View();
         }
 
         //System.Web.Mvc.Authorize]
+        [OutputCache(Duration = 0)]
         public ActionResult Contribute(int id = 1, string Parent= "a@a.com", string Contributor="1")
         {
             ViewBag.Message = "Contribute page.";
@@ -571,6 +582,14 @@ namespace KnockoutAndTypescript.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [OutputCache(Duration = 0)]
+        public ActionResult GetPointsToBeReviewedNum(int id)
+        {
+            var data = BL.GetPointsForId(id).Where(a => a.Approved == false).Sum(a => a.Points);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         [System.Web.Mvc.Authorize]
         public ActionResult ReviewPoints(int id = 1)
         {
@@ -605,6 +624,44 @@ namespace KnockoutAndTypescript.Controllers
 
             return View(model);
         }
+
+       // [System.Web.Mvc.Authorize]
+        public JsonResult GetListContributorPointsHistory(string idstr, string contributorIdstr)
+        {
+            var id = int.Parse(idstr);
+            var contributorId = int.Parse(contributorIdstr);
+
+            var cval = BL.GetContributorForId(contributorId);
+            //var dataf = BL.GetPointsAndDescriptionForIdUnfiltered(id).ToList();
+            var data = BL.GetPointsAndDescriptionForIdUnfiltered(id).Where(a => a.ContributorId == contributorId && a.Saved == false).ToList().OrderByDescending(a => a.AllocationDate);
+           // var data = BL.GetPointsAndDescriptionForContributorId(cval.ContributorId).Where(a => a.Saved == false).ToList().OrderByDescending(o => o.AllocationDate);
+            var model = new List<PointReviewVM>();
+            foreach (var x in data)
+            {
+                var p = new PointReviewVM();
+                p.AllocationDate = x.AllocationDate.ToShortDateString();
+                p.BehaviourName = x.Behaviour.BehaviourName;
+                p.BehaviourId = x.BehaviourId;
+                p.BehaviourPoints = x.Points;
+                p.ChildId = x.ChildId;
+                p.PointId = x.PointId;
+                p.Saved = x.Saved;
+                p.Approved = x.Approved;
+                p.ChildName = BL.GetChildForId(p.ChildId).ChildName;
+                if (x.ContributorId != 0)
+                {
+                    var c = BL.GetContributorForId(x.ContributorId);
+                    p.Contributor = c.ContributorName;
+                }
+                else
+                {
+                    p.Contributor = User.Identity.Name;
+                }
+                model.Add(p);
+            }
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
 
         [System.Web.Mvc.Authorize]
         public ActionResult ReviewContributorPoints( string parent, string contributor)
@@ -827,7 +884,17 @@ namespace KnockoutAndTypescript.Controllers
         [OutputCache(Duration = 0)]
         public JsonResult PointAllocationListById(int id)
         {
+           
             var list = BL.GetPointsForId(id);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [OutputCache(Duration = 0)]
+        public JsonResult PointAllocationListByIdAndContributor(int id, int contributor)
+        {
+
+            var list = BL.GetPointsAndDescriptionForIdUnfiltered(id).Where(a => a.ContributorId == contributor);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 

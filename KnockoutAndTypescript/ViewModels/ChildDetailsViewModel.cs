@@ -31,6 +31,7 @@ namespace KnockoutAndTypescript.ViewModels
         public string Image { get; set; }
         public int BankedPoints { get; set; }
         public int AllocatedPoints { get; set; }
+        public int NotReviewedPoints { get; set; }
 
     }
 

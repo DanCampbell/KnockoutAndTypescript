@@ -79,6 +79,36 @@ var ContributeViewModel = (function () {
             promise.done(function (res) {
             });
         };
+        this.getPointsContributed = function (points, child, contributor) {
+            var childid = child.ChildId;
+            var data = JSON.stringify({
+                "idstr": childid,
+                "contributorIdstr": contributor
+            });
+            var promise = $.ajax({
+                url: "/Home/GetListContributorPointsHistory/",
+                cache: false,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //dataType: 'json',
+                data: data,
+                success: function (result) {
+                    //  points.removeAll();
+                    points.removeAll();
+                    //var data = result.json()[result];
+                    //let good: Behaviour = <Behaviour>result;
+                    for (var _i = 0, result_2 = result; _i < result_2.length; _i++) {
+                        var r = result_2[_i];
+                        points.push(r);
+                    }
+                },
+                error: function (ob, errStr) {
+                    alert("An error occured.Please try after sometime.");
+                }
+            });
+            promise.done(function (res) {
+            });
+        };
         this.getChildRewards = function (TotalPointsNum, child) {
             var childid = child.ChildId;
             var promise = $.ajax({
@@ -91,8 +121,8 @@ var ContributeViewModel = (function () {
                 success: function (result) {
                     //  points.removeAll();
                     var totalRewardsAllocation = 0;
-                    for (var _i = 0, result_2 = result; _i < result_2.length; _i++) {
-                        var r = result_2[_i];
+                    for (var _i = 0, result_3 = result; _i < result_3.length; _i++) {
+                        var r = result_3[_i];
                         totalRewardsAllocation = totalRewardsAllocation + r.PointsAllocated;
                     }
                     TotalPointsNum(TotalPointsNum() - totalRewardsAllocation);
@@ -113,8 +143,8 @@ var ContributeViewModel = (function () {
                 success: function (result) {
                     //var data = result.json()[result];
                     //let good: Behaviour = <Behaviour>result;
-                    for (var _i = 0, result_3 = result; _i < result_3.length; _i++) {
-                        var r = result_3[_i];
+                    for (var _i = 0, result_4 = result; _i < result_4.length; _i++) {
+                        var r = result_4[_i];
                         behavior.push(r);
                     }
                     //behavior(result);
@@ -140,8 +170,8 @@ var ContributeViewModel = (function () {
                 success: function (result) {
                     //var data = result.json()[result];
                     //let good: Behaviour = <Behaviour>result;
-                    for (var _i = 0, result_4 = result; _i < result_4.length; _i++) {
-                        var r = result_4[_i];
+                    for (var _i = 0, result_5 = result; _i < result_5.length; _i++) {
+                        var r = result_5[_i];
                         children.push(r);
                     }
                     //behavior(result);
@@ -193,8 +223,8 @@ var ContributeViewModel = (function () {
                 success: function (result) {
                     //var data = result.json()[result];
                     //let good: Behaviour = <Behaviour>result;
-                    for (var _i = 0, result_5 = result; _i < result_5.length; _i++) {
-                        var r = result_5[_i];
+                    for (var _i = 0, result_6 = result; _i < result_6.length; _i++) {
+                        var r = result_6[_i];
                         behavior.push(r);
                     }
                     //behavior(result);
@@ -225,6 +255,7 @@ var ContributeViewModel = (function () {
         this.goodBehaviour = ko.observableArray([]);
         this.naughtyBehaviour = ko.observableArray([]);
         this.Points = ko.observableArray([]);
+        this.ContributePoints = ko.observableArray([]);
         this.children = ko.observableArray([]);
         this.getGood(this, this.goodBehaviour);
         this.getBad(this, this.naughtyBehaviour);
@@ -240,6 +271,8 @@ var ContributeViewModel = (function () {
         //this.SelectedChild(initialchild);   
         this.ChildSelectedBool = ko.observable(false);
         this.NothingSelectedBool = ko.observable(true);
+        //this.ContributorVal = Contributor;
+        this.DisplayAdmin = ko.observable(false); // Contributor don't see admin functions like Bank etc'
         //debugger;
         //console.log(UserSelected);
         //var qrychild = this.urlParam("childid");
@@ -257,13 +290,17 @@ var ContributeViewModel = (function () {
             var badval = 0;
             for (var _i = 0, _a = _this.Points(); _i < _a.length; _i++) {
                 var p = _a[_i];
-                totalval = totalval + Number(p.Points);
-                p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                if (p.Approved == false && p.ContributorId == _this.Contributor) {
+                    totalval = totalval + Number(p.Points);
+                    p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                }
             }
             _this.TotalPointsNum(totalval);
             _this.GoodPointsNum(goodval);
             _this.BadPointsNum(badval);
             //this.ChatVar.server.send("test", totalval.toString());
+            // update List of Contributed Points
+            _this.getPointsContributed(_this.ContributePoints, _this.SelectedChild(), _this.Contributor);
         });
         this.TotalPointsNum.subscribe(function (data) {
             var totalval = 0;
@@ -271,8 +308,10 @@ var ContributeViewModel = (function () {
             var badval = 0;
             for (var _i = 0, _a = _this.Points(); _i < _a.length; _i++) {
                 var p = _a[_i];
-                totalval = totalval + Number(p.Points);
-                p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                if (p.Approved == false && p.ContributorId == _this.Contributor) {
+                    totalval = totalval + Number(p.Points);
+                    p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                }
             }
             //this.ChatVar.server.send("test", totalval.toString());
             //let pointcast = new PointSignal();

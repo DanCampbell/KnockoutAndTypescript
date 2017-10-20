@@ -122,6 +122,15 @@ namespace KnockoutAndTypescript.Business
             }
         }
 
+        public IEnumerable<PointAllocation> GetPointsAndDescriptionForIdUnfiltered(int id)
+        {
+            using (var db = new ModelKids())
+            {
+                var allPoints = db.PointAllocation.Where(a => a.ChildId == id).Include(i => i.Behaviour).ToList();
+                return allPoints;
+            }
+        }
+
         public IEnumerable<PointAllocation> GetPointsAndDescriptionForId(int id)
         {
             using (var db = new ModelKids())
@@ -154,6 +163,8 @@ namespace KnockoutAndTypescript.Business
                     //var banked = db.PointAllocation.Where(a => a.ChildId == c.ChildId && a.Saved == true && a.Approved == true);
                     //var banksum = banked.Sum(a => (int?)a.Points);
                     var allocatedPoints = GetAllChildRewardForId(c.ChildId).Where(a => a.RewardComplete == false).Sum(a => a.PointsAllocated);
+                    var pointstobereviewed = db.PointAllocation.Where(a => a.ChildId == c.ChildId && a.Approved == false);
+                    var pointsnotreviewed = pointstobereviewed.Sum(a => (int?)a.Points);
 
                     var cg = new ChildGuageViewModel();
                     cg.ChildId = c.ChildId;
@@ -162,6 +173,7 @@ namespace KnockoutAndTypescript.Business
                     cg.Image = c.UserImage;
                     cg.BankedPoints = c.BankedPoints;
                     cg.AllocatedPoints = allocatedPoints;
+                    cg.NotReviewedPoints = pointsnotreviewed.GetValueOrDefault();
                     guagelist.Add(cg);
                 }
                 return guagelist;

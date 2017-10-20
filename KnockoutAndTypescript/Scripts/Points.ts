@@ -43,10 +43,14 @@ class PointViewModel {
     ChildSelectedBool: KnockoutObservable<boolean>;
     NothingSelectedBool: KnockoutObservable<boolean>;
     ChildParmSelected: KnockoutObservable<number>;
+    PointsAllocatedNum: KnockoutObservable<number>;
+    PointsToBeReviewedNum: KnockoutObservable<number>;
+    ContributorVal: number;
+    DisplayAdmin: KnockoutObservable<boolean>;
    
     //getGood: (any) => void; 
    
-    constructor(UserSelected: any) {
+    constructor(UserSelected: any, Contributor:number) {
         //this.goals = ko.observableArray(values);
         //this.GoalName = ko.observable("").extend({required:true });
         //this.GoalPointsRequired = ko.observable(0).extend({required:true});
@@ -77,6 +81,10 @@ class PointViewModel {
         //this.SelectedChild(initialchild);   
         this.ChildSelectedBool = ko.observable(false);
         this.NothingSelectedBool = ko.observable(true);
+        this.PointsAllocatedNum = ko.observable(0);
+        this.PointsToBeReviewedNum = ko.observable(0);
+        this.ContributorVal = Contributor;
+        this.ContributorVal == -1 ? this.DisplayAdmin = ko.observable(true) : this.DisplayAdmin = ko.observable(false);
 
         //debugger;
         //console.log(UserSelected);
@@ -96,9 +104,23 @@ class PointViewModel {
             let goodval = 0;
             let badval = 0;
             for (let p of this.Points()) {
-                totalval = totalval + Number(p.Points);
-                p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                if (this.ContributorVal == -1) {
+                   // debugger;
+                    if (p.Approved == true)
+                    {
+                        totalval = totalval + Number(p.Points);
+                        p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                    }
+                }
+                if (this.ContributorVal != -1) {
+                   // debugger;
+                    if (p.Approved == false && p.ContributorId == this.ContributorVal) {
+                        totalval = totalval + Number(p.Points);
+                        p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                    }
+                }
             }
+            var testj = 99;
             this.TotalPointsNum(totalval);
             this.GoodPointsNum(goodval);
             this.BadPointsNum(badval);
@@ -156,7 +178,8 @@ class PointViewModel {
                 var testnum = this.SelectedChild().BankedPoints;
                 console.log(testnum);
                 this.BankedPointsNum(testnum);
-                //this.getChildRewards(this.BankedPointsNum, this.SelectedChild());
+                this.getChildRewards(this.PointsAllocatedNum, this.SelectedChild());
+                this.getPointsToBeReviewed(this.PointsToBeReviewedNum, this.SelectedChild());
             }
         });
     }
@@ -340,10 +363,29 @@ class PointViewModel {
                     for (let r of result) {
                         totalRewardsAllocation = totalRewardsAllocation + r.PointsAllocated;
                     }
-                    TotalPointsNum(TotalPointsNum() - totalRewardsAllocation);
-                    console.log(result);
-                     
+                   // TotalPointsNum(TotalPointsNum() - totalRewardsAllocation);
+                    TotalPointsNum(totalRewardsAllocation);
+                   // console.log(result);
+                },
+            });
+        promise.done(function (res) {
 
+        });
+    }
+
+    getPointsToBeReviewed = (TotalPointsNum: KnockoutObservable<number>, child) => {
+        var childid = child.ChildId;
+        var promise =
+            $.ajax({
+                url: "/Home/GetPointsToBeReviewedNum/",
+                cache: false,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: { "id": childid },
+                success: function (result) {                    
+                    TotalPointsNum(result);
+                    // console.log(result);
                 },
             });
         promise.done(function (res) {

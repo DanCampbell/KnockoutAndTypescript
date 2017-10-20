@@ -130,6 +130,94 @@ var RewardsModel = (function () {
         this.RewardsAry.valueHasMutated();
         // return false;
     };
+    RewardsModel.prototype.MaxPointsToGoal = function (root, index, val) {
+        console.log(val.GoalPoints);
+        var bankpoints = root.BankedPoints();
+        var difference = 0;
+        var bankadjust = 0;
+        if (val.GoalPoints < val.GoalCompletePoints) {
+            var diftocomplete = val.GoalCompletePoints - val.GoalPoints;
+            if (bankpoints > diftocomplete) {
+                bankadjust = bankpoints - diftocomplete;
+                val.GoalPoints = val.GoalCompletePoints;
+            }
+            else {
+                bankadjust = 0;
+                var newbalance = val.GoalPoints + bankpoints;
+                val.GoalPoints = newbalance;
+            }
+        }
+        //val.GoalPoints = 0;
+        //val.SliderVisible = true;
+        //val.GoalPointsOriginal = 0;
+        //var newbankpoints = bankpoints + val.GoalPoints;
+        //root.BankedPoints(newbankpoints);
+        if (val.GoalPoints > val.GoalPointsOriginal) {
+            difference = val.GoalPoints - val.GoalPointsOriginal;
+            bankpoints = bankpoints - difference;
+            if (bankpoints < 0) {
+                val.GoalPoints = val.GoalPointsOriginal;
+            }
+            else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+        if (val.GoalPoints < val.GoalPointsOriginal) {
+            difference = val.GoalPointsOriginal - val.GoalPoints;
+            //  console.log(difference);
+            bankpoints = bankpoints + difference;
+            if (bankpoints < 0) {
+                val.GoalPoints = val.GoalPointsOriginal;
+            }
+            else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+        var changedIdx = root.RewardsAry.indexOf(val);
+        root.RewardsAry.splice(changedIdx, 1); // removes the item from the array
+        root.RewardsAry.splice(changedIdx, 0, val); // adds it back
+        root.RewardsAry.valueHasMutated();
+        root.AwardedAry.notifySubscribers();
+    };
+    RewardsModel.prototype.PutPointsBack = function (root, index, val) {
+        console.log(val.GoalPoints);
+        var bankpoints = root.BankedPoints();
+        var difference = 0;
+        if (val.GoalPoints > 0) {
+            val.GoalPoints = 0;
+            val.SliderVisible = true;
+        }
+        if (val.GoalPoints > val.GoalPointsOriginal) {
+            difference = val.GoalPoints - val.GoalPointsOriginal;
+            bankpoints = bankpoints - difference;
+            if (bankpoints < 0) {
+                val.GoalPoints = val.GoalPointsOriginal;
+            }
+            else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+        if (val.GoalPoints < val.GoalPointsOriginal) {
+            difference = val.GoalPointsOriginal - val.GoalPoints;
+            //  console.log(difference);
+            bankpoints = bankpoints + difference;
+            if (bankpoints < 0) {
+                val.GoalPoints = val.GoalPointsOriginal;
+            }
+            else {
+                root.BankedPoints(bankpoints);
+                val.GoalPointsOriginal = val.GoalPoints;
+            }
+        }
+        var changedIdx = root.RewardsAry.indexOf(val);
+        root.RewardsAry.splice(changedIdx, 1); // removes the item from the array
+        root.RewardsAry.splice(changedIdx, 0, val); // adds it back
+        root.RewardsAry.valueHasMutated();
+        root.AwardedAry.notifySubscribers();
+    };
     RewardsModel.prototype.ChangeSlider = function (val) {
         //if (val.GoalPoints > 75) {
         //    val.GoalPoints = 75;

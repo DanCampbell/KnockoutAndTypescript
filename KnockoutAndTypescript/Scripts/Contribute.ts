@@ -30,6 +30,7 @@ class ContributeViewModel {
     Errors: KnockoutValidationErrors;
     SelectedChild: KnockoutObservable<any>;
     Points: KnockoutObservableArray<Points>;
+    ContributePoints: KnockoutObservableArray<PointReview>;
     TotalPoints: KnockoutComputed<number>;
     ComputeTotalPoints: () => void;
     TotalPointsNum: KnockoutObservable<number>;
@@ -43,6 +44,8 @@ class ContributeViewModel {
     ChildParmSelected: KnockoutObservable<number>;
     Parent: string;
     Contributor: number;
+    //ContributorVal: number;
+    DisplayAdmin: KnockoutObservable<boolean>;
    
     //getGood: (any) => void; 
    
@@ -64,6 +67,7 @@ class ContributeViewModel {
         this.goodBehaviour = ko.observableArray([]);
         this.naughtyBehaviour = ko.observableArray([]);
         this.Points = ko.observableArray([]);
+        this.ContributePoints = ko.observableArray([]);
         this.children = ko.observableArray([]);
         this.getGood(this, this.goodBehaviour);
         this.getBad(this, this.naughtyBehaviour);
@@ -79,6 +83,9 @@ class ContributeViewModel {
         //this.SelectedChild(initialchild);   
         this.ChildSelectedBool = ko.observable(false);
         this.NothingSelectedBool = ko.observable(true);
+        //this.ContributorVal = Contributor;
+        this.DisplayAdmin = ko.observable(false);  // Contributor don't see admin functions like Bank etc'
+
 
         //debugger;
         //console.log(UserSelected);
@@ -98,13 +105,17 @@ class ContributeViewModel {
             let goodval = 0;
             let badval = 0;
             for (let p of this.Points()) {
-                totalval = totalval + Number(p.Points);
-                p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                if (p.Approved == false && p.ContributorId == this.Contributor) {
+                    totalval = totalval + Number(p.Points);
+                    p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                }
             }
             this.TotalPointsNum(totalval);
             this.GoodPointsNum(goodval);
             this.BadPointsNum(badval);
             //this.ChatVar.server.send("test", totalval.toString());
+            // update List of Contributed Points
+            this.getPointsContributed(this.ContributePoints, this.SelectedChild(), this.Contributor);
         });
 
         this.TotalPointsNum.subscribe((data) => {
@@ -112,8 +123,10 @@ class ContributeViewModel {
             let goodval = 0;
             let badval = 0;
             for (let p of this.Points()) {
-                totalval = totalval + Number(p.Points);
-                p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                if (p.Approved == false && p.ContributorId == this.Contributor) {
+                    totalval = totalval + Number(p.Points);
+                    p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                }
             }
             
             //this.ChatVar.server.send("test", totalval.toString());
@@ -158,6 +171,8 @@ class ContributeViewModel {
                 var testnum = this.SelectedChild().BankedPoints;
                 console.log(testnum);
                 this.BankedPointsNum(testnum);
+                //this.getPointsContributed(this.ContributePoints, this.SelectedChild(), this.Contributor);
+               // this.getPointsContributed(this.ContributePoints, this.SelectedChild(), this.Contributor);
                 //this.getChildRewards(this.BankedPointsNum, this.SelectedChild());
             }
         });
@@ -321,6 +336,41 @@ class ContributeViewModel {
                     //match.GoalId = goal.GoalId; // set Id to that returned from Server
 
                 },
+            });
+        promise.done(function (res) {
+
+        });
+    }
+
+    getPointsContributed = (points: KnockoutObservableArray<PointReview>, child, contributor:number) => {
+        var childid = child.ChildId;
+        var data = JSON.stringify({
+            "idstr": childid,
+            "contributorIdstr": contributor
+            // "idstr": "2",
+            //"contributorIdstr": "4"
+        });
+
+        var promise =
+            $.ajax({
+                url: "/Home/GetListContributorPointsHistory/",
+                cache: false,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //dataType: 'json',
+                data: data,
+                success: function (result) {
+                    //  points.removeAll();
+                    points.removeAll();
+                    //var data = result.json()[result];
+                    //let good: Behaviour = <Behaviour>result;
+                    for (let r of result) {
+                        points.push(r);
+                    }                    
+                },
+                error: function (ob, errStr) {
+                    alert("An error occured.Please try after sometime.");
+                }
             });
         promise.done(function (res) {
 

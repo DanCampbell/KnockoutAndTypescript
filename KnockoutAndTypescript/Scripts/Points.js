@@ -14,7 +14,7 @@ var PointSignal = (function () {
 }());
 var PointViewModel = (function () {
     //getGood: (any) => void; 
-    function PointViewModel(UserSelected) {
+    function PointViewModel(UserSelected, Contributor) {
         var _this = this;
         this.urlParam = function (name) {
             var results = new RegExp('[\?&]' + name + '=([^]*)').exec(window.location.href);
@@ -88,8 +88,26 @@ var PointViewModel = (function () {
                         var r = result_2[_i];
                         totalRewardsAllocation = totalRewardsAllocation + r.PointsAllocated;
                     }
-                    TotalPointsNum(TotalPointsNum() - totalRewardsAllocation);
-                    console.log(result);
+                    // TotalPointsNum(TotalPointsNum() - totalRewardsAllocation);
+                    TotalPointsNum(totalRewardsAllocation);
+                    // console.log(result);
+                },
+            });
+            promise.done(function (res) {
+            });
+        };
+        this.getPointsToBeReviewed = function (TotalPointsNum, child) {
+            var childid = child.ChildId;
+            var promise = $.ajax({
+                url: "/Home/GetPointsToBeReviewedNum/",
+                cache: false,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: { "id": childid },
+                success: function (result) {
+                    TotalPointsNum(result);
+                    // console.log(result);
                 },
             });
             promise.done(function (res) {
@@ -225,6 +243,10 @@ var PointViewModel = (function () {
         //this.SelectedChild(initialchild);   
         this.ChildSelectedBool = ko.observable(false);
         this.NothingSelectedBool = ko.observable(true);
+        this.PointsAllocatedNum = ko.observable(0);
+        this.PointsToBeReviewedNum = ko.observable(0);
+        this.ContributorVal = Contributor;
+        this.ContributorVal == -1 ? this.DisplayAdmin = ko.observable(true) : this.DisplayAdmin = ko.observable(false);
         //debugger;
         //console.log(UserSelected);
         //var qrychild = this.urlParam("childid");
@@ -242,9 +264,22 @@ var PointViewModel = (function () {
             var badval = 0;
             for (var _i = 0, _a = _this.Points(); _i < _a.length; _i++) {
                 var p = _a[_i];
-                totalval = totalval + Number(p.Points);
-                p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                if (_this.ContributorVal == -1) {
+                    // debugger;
+                    if (p.Approved == true) {
+                        totalval = totalval + Number(p.Points);
+                        p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                    }
+                }
+                if (_this.ContributorVal != -1) {
+                    // debugger;
+                    if (p.Approved == false && p.ContributorId == _this.ContributorVal) {
+                        totalval = totalval + Number(p.Points);
+                        p.Points < 0 ? badval = badval + p.Points : goodval = goodval + p.Points;
+                    }
+                }
             }
+            var testj = 99;
             _this.TotalPointsNum(totalval);
             _this.GoodPointsNum(goodval);
             _this.BadPointsNum(badval);
@@ -298,6 +333,8 @@ var PointViewModel = (function () {
                 var testnum = _this.SelectedChild().BankedPoints;
                 console.log(testnum);
                 _this.BankedPointsNum(testnum);
+                _this.getChildRewards(_this.PointsAllocatedNum, _this.SelectedChild());
+                _this.getPointsToBeReviewed(_this.PointsToBeReviewedNum, _this.SelectedChild());
             }
         });
     }
